@@ -1,13 +1,22 @@
 {
   "name": "simply-result",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Simply typesafe Result and Option monads in typescript and javascript.",
   "main": "dist/main.js",
+  "sideEffects": false,
   "scripts": {
     "build": "rimraf ./dist && tsc",
     "demo": "npx ts-node ./demo/main.ts",
     "prepublishOnly": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Olian04/simply-result.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Olian04/simply-result/issues"
+  },
+  "homepage": "https://github.com/Olian04/simply-result#readme",
   "keywords": [
     "monad",
     "result",
