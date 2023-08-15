@@ -1,0 +1,25 @@
+{
+  "name": "simply-result",
+  "version": "1.0.0",
+  "description": "Simply typesafe Result and Option monads in typescript and javascript.",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "rimraf ./dist && tsc",
+    "demo": "npx ts-node ./demo/main.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "monad",
+    "result",
+    "option",
+    "typescript",
+    "typesafe"
+  ],
+  "author": "Olian04",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "typescript": "^5.1.6",
+    "rimraf": "^5.0.1"
+  }
+}
