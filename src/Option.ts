@@ -6,7 +6,7 @@ export interface Some<V> {
     isSome: true;
     isNone: false;
     unwrap(): V;
-    unwrapOr(defaultValue: V): V;
+    unwrapOr(defaultValue: unknown): V;
     toString(): string;
 }
 
