@@ -18,7 +18,7 @@ export interface None {
     toString(): string;
 }
 
-export const Some = <V,>(value: V): Some<V> => ({
+export const Some = <V>(value: V): Some<V> => ({
     get isSome() {
         return true as const;
     },

@@ -15,4 +15,3 @@ export const TryAsync = async <V, E>(fn: () => Promise<V>): Promise<Result<V, E>
         return Err(err as E);
     }
 };
-

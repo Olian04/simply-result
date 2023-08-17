@@ -12,7 +12,7 @@ export function match<V, E, T>(target: Result<V, E>, cases: {
 export function match(target: any, cases: any) {
     if (target.isSome) {
         return cases.Some(
-            target.unwrapOrThrow()
+            target.unwrap()
         );
     }
     if (target.isNone) {
@@ -20,12 +20,12 @@ export function match(target: any, cases: any) {
     }
     if (target.isOk) {
         return cases.Ok(
-            target.unwrapOrThrow()
+            target.unwrap()
         );
     }
     if (target.isErr) {
         return cases.Err(
-            target.err.unwrapOrThrow()
+            target.err.unwrap()
         );
     }
     throw new Error('Unexpected argument type');

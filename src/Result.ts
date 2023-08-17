@@ -1,4 +1,5 @@
-import { None, Some } from "./Option";
+import { None, Option, Some } from "./Option";
+import { map, mapErr } from "./map";
 
 export type Result<V, E> =
     | Ok<V>
@@ -24,7 +25,7 @@ export interface Err<E> {
     toString(): string;
 }
 
-export const Ok = <V,>(value: V): Ok<V> => ({
+export const Ok = <V>(value: V): Ok<V> => ({
     get ok() {
         return Some(value);
     },
@@ -42,7 +43,7 @@ export const Ok = <V,>(value: V): Ok<V> => ({
     toString: () => `Ok(${value})`,
 });
 
-export const Err = <E,>(error: E): Err<E> => ({
+export const Err = <E>(error: E): Err<E> => ({
     get ok() {
         return None;
     },
