@@ -62,7 +62,3 @@ export const Err = <E>(error: E): Err<E> => ({
     unwrapOr: defaultValue => defaultValue,
     toString: () => `Err(${error})`,
 });
-
-const a = Ok(2) as Result<number, Error>;
-
-const b = a.unwrapOr('0')
