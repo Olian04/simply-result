@@ -17,11 +17,11 @@ import {
 
 const doSomeWork = (): Result<number, Error> => Ok(3);
 
-const a = doSomeWork();
-const b = mapErr(a, e => e.name);
-const c = map(b, v => v === 0 ? None : Some(1 / v));
-const d = c.unwrapOr(Some(0));
-const e = map(d, v => String(v * 6));
+const a = doSomeWork(); // Result<number, Error>
+const b = mapErr(a, e => e.name); // Result<number, string>
+const c = map(b, v => v === 0 ? None : Some(1 / v)); // Result<Option<number>, string>
+const d = c.unwrapOr(Some(0)); // Option<number>
+const e = map(d, v => String(v * 6)); // Option<string>
 
 console.log(e.unwrap()); // "2"
 ```
