@@ -19,6 +19,8 @@ Simply typesafe Result and Option monads in typescript and javascript. Less than
 import {
     Result, Ok, Err,
     Option, Some, None,
+    map, mapErr, match,
+    Try, Get, transpose,
 } from 'simply-result';
 ```
 
