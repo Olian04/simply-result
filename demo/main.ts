@@ -18,10 +18,11 @@ const parseJson = (body: string) => Try<Record<string, string | number>, Error>(
     console.log(`Version: ${version}`);
 })();
 
-const a = Ok(2) as Result<number, Error>;
+const doSomeWork = (): Result<number, Error> => Ok(3);
 
+const a = doSomeWork();
 const e = mapErr(a, e => e.name);
-const b = map(e, v => v === 0 ? None : Some(2 / v));
+const b = map(e, v => v === 0 ? None : Some(1 / v));
 const d = map(b.unwrap(), v => String(v * 6));
 
 console.log(typeof d.unwrap(), d.unwrap());

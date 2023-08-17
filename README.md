@@ -8,6 +8,24 @@
 
 Simply typesafe Result and Option monads in typescript and javascript. Less than 1kb minified and gzipped. Branchless implementation that waists no processing cycles on unnecessary operations.
 
+```ts
+import {
+    Result, Ok, Err,
+    Some, None,
+    map, mapErr,
+} from 'simply-result';
+
+const doSomeWork = (): Result<number, Error> => Ok(3);
+
+const a = doSomeWork();
+const e = mapErr(a, e => e.name);
+const b = map(e, v => v === 0 ? None : Some(1 / v));
+const d = map(b.unwrap(), v => String(v * 6));
+
+console.log(d.unwrap()); // "2"
+```
+
+
 ## Installation
 
 ### NPM
