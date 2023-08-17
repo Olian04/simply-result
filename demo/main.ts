@@ -28,3 +28,23 @@ const e = map(d, v => String(v * 6));
 
 console.log(e.unwrap()); // "2"
 
+const nested = mapErr(map(Ok(2), it => it ** 2), e => {
+    if (e instanceof Error) {
+        return e;
+    }
+    return String(e);
+});
+
+console.log(String(nested));
+
+const withMap = map(doSomeWork(), it => it ** 2);
+const withoutMap = ((x: Result<number, Error>): Result<number, Error> => {
+    if (x.isErr) {
+        return x;
+    }
+    const it = x.unwrap();
+    return Ok(it ** 2);
+})(doSomeWork());
+
+console.log(String(withMap), String(withoutMap));
+
