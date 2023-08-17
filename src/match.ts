@@ -11,22 +11,16 @@ export function match<V, E, T>(target: Result<V, E>, cases: {
 }): T;
 export function match(target: any, cases: any) {
     if (target.isSome) {
-        return cases.Some(
-            target.unwrap()
-        );
+        return cases.Some(target.unwrap());
     }
     if (target.isNone) {
         return cases.None();
     }
     if (target.isOk) {
-        return cases.Ok(
-            target.unwrap()
-        );
+        return cases.Ok(target.unwrap());
     }
     if (target.isErr) {
-        return cases.Err(
-            target.err.unwrap()
-        );
+        return cases.Err(target.err.unwrap());
     }
     throw new Error('Unexpected argument type');
 }

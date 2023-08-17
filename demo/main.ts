@@ -21,9 +21,10 @@ const parseJson = (body: string) => Try<Record<string, string | number>, Error>(
 const doSomeWork = (): Result<number, Error> => Ok(3);
 
 const a = doSomeWork();
-const e = mapErr(a, e => e.name);
-const b = map(e, v => v === 0 ? None : Some(1 / v));
-const d = map(b.unwrap(), v => String(v * 6));
+const b = mapErr(a, e => e.name);
+const c = map(b, v => v === 0 ? None : Some(1 / v));
+const d = c.unwrapOr(Some(0));
+const e = map(d, v => String(v * 6));
 
-console.log(typeof d.unwrap(), d.unwrap());
+console.log(e.unwrap()); // "2"
 

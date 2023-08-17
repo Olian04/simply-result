@@ -6,23 +6,24 @@
 
 # simply-result
 
-Simply typesafe Result and Option monads in typescript and javascript. Less than 1kb minified and gzipped. Branchless implementation that waists no processing cycles on unnecessary operations.
+Simply typesafe Result and Option monads in typescript and javascript. 1kb minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations.
 
 ```ts
 import {
     Result, Ok, Err,
-    Some, None,
+    Option, Some, None,
     map, mapErr,
 } from 'simply-result';
 
 const doSomeWork = (): Result<number, Error> => Ok(3);
 
 const a = doSomeWork();
-const e = mapErr(a, e => e.name);
-const b = map(e, v => v === 0 ? None : Some(1 / v));
-const d = map(b.unwrap(), v => String(v * 6));
+const b = mapErr(a, e => e.name);
+const c = map(b, v => v === 0 ? None : Some(1 / v));
+const d = c.unwrapOr(Some(0));
+const e = map(d, v => String(v * 6));
 
-console.log(d.unwrap()); // "2"
+console.log(e.unwrap()); // "2"
 ```
 
 
@@ -36,8 +37,9 @@ console.log(d.unwrap()); // "2"
 import {
     Result, Ok, Err,
     Option, Some, None,
-    map, mapErr, match,
-    Try, Get, transpose,
+    map, mapErr, chain,
+    match, transpose,
+    Try, Get,
 } from 'simply-result';
 ```
 
