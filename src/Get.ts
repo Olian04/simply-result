@@ -12,4 +12,4 @@ export const GetOr = <V>(object: Partial<Record<string | number | symbol, V>>, k
     match(Get(object, key), {
         Some: value => Some(value),
         None: () => Some(fallbackValue),
-    });
+    }) as Some<V>;

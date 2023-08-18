@@ -26,7 +26,6 @@ const e = map(d, v => String(v * 6)); // Option<string>
 console.log(e.unwrap()); // "2"
 ```
 
-
 ## Installation
 
 ### NPM
@@ -37,9 +36,8 @@ console.log(e.unwrap()); // "2"
 import {
     Result, Ok, Err,
     Option, Some, None,
-    map, mapErr, chain,
-    match, transpose,
-    Try, Get,
+    map, mapErr, match,
+    Try, Get, transpose,
 } from 'simply-result';
 ```
 

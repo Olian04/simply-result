@@ -1,5 +1,4 @@
-import { None, Option, Some } from "./Option";
-import { map, mapErr } from "./map";
+import { None, Some } from "./Option";
 
 export type Result<V, E> =
     | Ok<V>
