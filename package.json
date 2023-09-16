@@ -1,6 +1,6 @@
 {
   "name": "simply-result",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Simply typesafe Result and Option monads in typescript and javascript.",
   "main": "dist/main.js",
   "sideEffects": false,
