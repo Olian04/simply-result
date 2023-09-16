@@ -27,23 +27,6 @@ export function match<V, T>(option: Option<V>, cases: {
     None: () => T
 }): T extends Result<unknown, unknown> ? never : T extends Option<unknown> ? never : T;
 
-export function match(target: Option<unknown> | Result<unknown, unknown>, cases: {
-    Some?: (val: unknown) => unknown,
-    None?: () => unknown,
-    Ok?: (val: unknown) => unknown,
-    Err?: (error: unknown) => unknown,
-}) {
-    if ('isSome' in target && target.isSome) {
-        return cases.Some?.(target.unwrap());
-    }
-    if ('isOk' in target && target.isOk) {
-        return cases.Ok?.(target.unwrap());
-    }
-    if ('isNone' in target && target.isNone) {
-        return cases.None?.();
-    }
-    if ('isErr' in target && target.isErr) {
-        return cases.Err?.(target.err.unwrap());
-    }
-    throw new Error('Unexpected argument type');
+export function match(target: Option<unknown> | Result<unknown, unknown>, cases: Record<string, any>) {
+    return target._chain(cases.Ok || cases.Some, cases.Err || cases.None);
 }

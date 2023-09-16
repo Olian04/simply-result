@@ -7,9 +7,3 @@ export const Get = <V>(object: Partial<Record<string | number | symbol, V>>, key
     }
     return None;
 };
-
-export const GetOr = <V>(object: Partial<Record<string | number | symbol, V>>, key: keyof typeof object, fallbackValue: V): Some<V> =>
-    match(Get(object, key), {
-        Some: value => Some(value),
-        None: () => Some(fallbackValue),
-    }) as Some<V>;

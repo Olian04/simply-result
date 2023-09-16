@@ -8,6 +8,7 @@ export interface Some<V> {
     unwrap(): V;
     unwrapOr(defaultValue: unknown): V;
     toString(): string;
+    _chain(some: (val: any) => any, none: () => any): any;
 }
 
 export interface None {
@@ -16,6 +17,7 @@ export interface None {
     unwrap(): never;
     unwrapOr<V>(defaultValue: V): V;
     toString(): string;
+    _chain(some: (val: any) => any, none: () => any): any;
 }
 
 export const Some = <V>(value: V): Some<V> => ({
@@ -28,6 +30,7 @@ export const Some = <V>(value: V): Some<V> => ({
     unwrap: () => value,
     unwrapOr: () => value,
     toString: () => `Some(${value})`,
+    _chain: (fn, _) => fn(value),
 });
 
 export const None: None = {
@@ -42,4 +45,5 @@ export const None: None = {
     },
     unwrapOr: defaultValue => defaultValue,
     toString: () => `None()`,
+    _chain: (_, fn) => fn(),
 };
