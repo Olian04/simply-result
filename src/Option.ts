@@ -1,3 +1,5 @@
+import { chainFn, chainKey } from "./private";
+
 export type Option<V> =
     | Some<V>
     | None;
@@ -8,7 +10,8 @@ export interface Some<V> {
     unwrap(): V;
     unwrapOr(defaultValue: unknown): V;
     toString(): string;
-    _chain(some: (val: any) => any, none: () => any): any;
+    [chainFn](fn: (val?: any) => any): any;
+    [chainKey]: 'Some',
 }
 
 export interface None {
@@ -17,7 +20,8 @@ export interface None {
     unwrap(): never;
     unwrapOr<V>(defaultValue: V): V;
     toString(): string;
-    _chain(some: (val: any) => any, none: () => any): any;
+    [chainFn](fn: (val?: any) => any): any;
+    [chainKey]: 'None',
 }
 
 export const Some = <V>(value: V): Some<V> => ({
@@ -30,7 +34,8 @@ export const Some = <V>(value: V): Some<V> => ({
     unwrap: () => value,
     unwrapOr: () => value,
     toString: () => `Some(${value})`,
-    _chain: (fn, _) => fn(value),
+    [chainFn]: fn => fn(value),
+    [chainKey]: 'Some',
 });
 
 export const None: None = {
@@ -45,5 +50,6 @@ export const None: None = {
     },
     unwrapOr: defaultValue => defaultValue,
     toString: () => `None()`,
-    _chain: (_, fn) => fn(),
+    [chainFn]: fn => fn(),
+    [chainKey]: 'None',
 };

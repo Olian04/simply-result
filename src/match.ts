@@ -1,5 +1,6 @@
 import { Result } from "./Result";
 import { Option } from "./Option";
+import { chainFn, chainKey } from "./private";
 
 export function match<V, E, T>(result: Result<V, E>, cases: {
     Ok: (value: V) => Option<T>,
@@ -28,5 +29,5 @@ export function match<V, T>(option: Option<V>, cases: {
 }): T extends Result<unknown, unknown> ? never : T extends Option<unknown> ? never : T;
 
 export function match(target: Option<unknown> | Result<unknown, unknown>, cases: Record<string, any>) {
-    return target._chain(cases.Ok || cases.Some, cases.Err || cases.None);
+    return target[chainFn](cases[target[chainKey]]);
 }

@@ -1,4 +1,5 @@
 import { None, Some } from "./Option";
+import { chainFn, chainKey } from "./private";
 
 export type Result<V, E> = Ok<V> | Err<E>;
 
@@ -10,7 +11,8 @@ export interface Ok<V> {
   unwrap(): V;
   unwrapOr(defaultValue: unknown): V;
   toString(): string;
-  _chain(ok: (val: any) => any, err: (err: any) => any): any;
+  [chainFn](fn: (val?: any) => any): any;
+  [chainKey]: 'Ok',
 }
 
 export interface Err<E> {
@@ -21,7 +23,8 @@ export interface Err<E> {
   unwrap(): never;
   unwrapOr<V>(defaultValue: V): V;
   toString(): string;
-  _chain(ok: (val: any) => any, err: (err: any) => any): any;
+  [chainFn](fn: (val?: any) => any): any;
+  [chainKey]: 'Err',
 }
 
 export const Ok = <V>(value: V): Ok<V> => ({
@@ -40,7 +43,8 @@ export const Ok = <V>(value: V): Ok<V> => ({
   unwrap: () => value,
   unwrapOr: () => value,
   toString: () => `Ok(${value})`,
-  _chain: (fn, _) => fn(value),
+  [chainFn]: fn => fn(value),
+  [chainKey]: 'Ok',
 });
 
 export const Err = <E>(error: E): Err<E> => ({
@@ -61,5 +65,6 @@ export const Err = <E>(error: E): Err<E> => ({
   },
   unwrapOr: (defaultValue) => defaultValue,
   toString: () => `Err(${error})`,
-  _chain: (_, fn) => fn(error),
+  [chainFn]: fn => fn(error),
+  [chainKey]: 'Err',
 });
