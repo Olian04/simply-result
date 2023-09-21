@@ -7,6 +7,7 @@ export type Option<V> =
 export interface Some<V> {
     isSome: true;
     isNone: false;
+    value: V;
     unwrap(): V;
     unwrapOr(defaultValue: unknown): V;
     toString(): string;
@@ -30,6 +31,9 @@ export const Some = <V>(value: V): Some<V> => ({
     },
     get isNone() {
         return false as const;
+    },
+    get value() {
+        return value;
     },
     unwrap: () => value,
     unwrapOr: () => value,

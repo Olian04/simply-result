@@ -10,20 +10,26 @@ Simply typesafe Result and Option monads in typescript and javascript. 1kb minif
 
 ```ts
 import {
-    Result, Ok, Err,
-    Option, Some, None,
-    map, mapErr,
+    Result, Ok,
+    Some, None,
+    match, map,
 } from 'simply-result';
 
 const doSomeWork = (): Result<number, Error> => Ok(3);
+const res = doSomeWork();
 
-const a = doSomeWork(); // Result<number, Error>
-const b = mapErr(a, e => e.name); // Result<number, string>
-const c = map(b, v => v === 0 ? None : Some(1 / v)); // Result<Option<number>, string>
-const d = c.unwrapOr(Some(0)); // Option<number>
-const e = map(d, v => String(v * 6)); // Option<string>
+const numb = match(res, {
+    Ok: v => v === 0
+        ? None
+        : Some(1 / v),
+    Err: () => Some(0),
+});
 
-console.log(e.unwrap()); // "2"
+const str = map(numb, String);
+
+if (str.isSome) {
+    console.log(str.value); // 0.33...
+}
 ```
 
 ## Installation
