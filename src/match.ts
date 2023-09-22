@@ -1,5 +1,6 @@
-import { Result } from "./Result";
-import { Option } from "./Option";
+import type { Result } from "./Result";
+import type { Option } from "./Option";
+
 import { chainFn, chainKey } from "./private";
 
 export function match<V, E, T>(result: Result<V, E>, cases: {

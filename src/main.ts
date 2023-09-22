@@ -6,3 +6,4 @@ export * from './match';
 export * from './transpose';
 export * from './flatten';
 export * from './map';
+export * from './fromPromise';
