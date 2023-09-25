@@ -1,6 +1,6 @@
 import { chainFn, chainKey } from "./private";
 
-export type Result<V, E = Error> =
+export type Result<V = unknown, E = Error> =
   | Ok<V>
   | Err<E>;
 

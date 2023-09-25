@@ -1,6 +1,6 @@
 import { chainFn, chainKey } from "./private";
 
-export type Option<V> =
+export type Option<V = unknown> =
   | Some<V>
   | None;
 
