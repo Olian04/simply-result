@@ -5,7 +5,8 @@
   "main": "dist/main.js",
   "sideEffects": false,
   "scripts": {
-    "build": "rimraf ./dist && tsc && du -sh ./dist",
+    "build": "rimraf ./dist && tsc && npm run gen:size_badge",
+    "gen:size_badge": "rimraf ./tmp && mkdir -p ./assets && rollup --config && node ./scripts/gen_size_badge_url.mjs |  xargs curl -o ./assets/size.badge.svg",
     "demo": "npx ts-node ./demo/main.ts",
     "prepublishOnly": "npm run build"
   },
@@ -27,8 +28,12 @@
   "author": "Olian04",
   "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.4",
+    "@rollup/plugin-terser": "^0.4.3",
     "@types/node": "^20.6.3",
-    "typescript": "^5.2.2",
-    "rimraf": "^5.0.1"
+    "rimraf": "^5.0.1",
+    "rollup": "3.29.3",
+    "gzip-size": "^7.0.0",
+    "typescript": "^5.2.2"
   }
 }
