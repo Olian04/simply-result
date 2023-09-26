@@ -1,5 +1,8 @@
-src
+assets
 demo
+scripts
+src
+tmp
+.editorconfig
 tsconfig.json
 rollup.config.mjs
-.editorconfig
