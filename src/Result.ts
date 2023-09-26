@@ -1,6 +1,4 @@
-import { chainFn, chainKey } from "./private";
-
-export type Result<V = unknown, E = Error> =
+export type Result<V, E = Error> =
   | Ok<V>
   | Err<E>;
 
@@ -14,8 +12,6 @@ export interface Ok<V> {
   map<T>(fn: (value: V) => T): Ok<T>;
   mapErr(fn: unknown): Ok<V>;
   toString(): string;
-  [chainFn](fn: (val?: any) => any): any;
-  [chainKey]: 'Ok',
 }
 
 export interface Err<E> {
@@ -28,8 +24,6 @@ export interface Err<E> {
   map(fn: unknown): Err<E>;
   mapErr<F>(fn: (error: E) => F): Err<F>;
   toString(): string;
-  [chainFn](fn: (val?: any) => any): any;
-  [chainKey]: 'Err',
 }
 
 export const Ok = <V>(value: V): Ok<V> => ({
@@ -46,8 +40,6 @@ export const Ok = <V>(value: V): Ok<V> => ({
   map: fn => Ok(fn(value)),
   mapErr: () => Ok(value),
   toString: () => `Ok(${value})`,
-  [chainFn]: fn => fn(value),
-  [chainKey]: 'Ok',
 });
 
 export const Err = <E>(error: E): Err<E> => ({
@@ -64,6 +56,4 @@ export const Err = <E>(error: E): Err<E> => ({
   map: () => Err(error),
   mapErr: fn => Err(fn(error)),
   toString: () => `Err(${error})`,
-  [chainFn]: fn => fn(error),
-  [chainKey]: 'Err',
 });

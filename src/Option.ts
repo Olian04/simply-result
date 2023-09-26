@@ -1,6 +1,4 @@
-import { chainFn, chainKey } from "./private";
-
-export type Option<V = unknown> =
+export type Option<V> =
   | Some<V>
   | None;
 
@@ -13,8 +11,6 @@ export interface Some<V> {
   }): T;
   map<T>(fn: (value: V) => T): Some<T>;
   toString(): string;
-  [chainFn](fn: (val?: any) => any): any;
-  [chainKey]: 'Some',
 }
 
 export interface None {
@@ -25,8 +21,6 @@ export interface None {
   }): T;
   map(fn: unknown): None;
   toString(): string;
-  [chainFn](fn: (val?: any) => any): any;
-  [chainKey]: 'None',
 }
 
 export const Some = <V>(value: V): Some<V> => ({
@@ -42,8 +36,6 @@ export const Some = <V>(value: V): Some<V> => ({
   match: cases => cases.Some(value),
   map: fn => Some(fn(value)),
   toString: () => `Some(${value})`,
-  [chainFn]: fn => fn(value),
-  [chainKey]: 'Some',
 });
 
 export const None: None = {
@@ -56,6 +48,4 @@ export const None: None = {
   match: cases => cases.None(),
   map: () => None,
   toString: () => `None()`,
-  [chainFn]: fn => fn(),
-  [chainKey]: 'None',
 };

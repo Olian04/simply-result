@@ -36,12 +36,102 @@ if (str.isSome) {
 import {
     Result, Ok, Err,
     Option, Some, None,
-    map, mapErr, match,
-    Try, Get, transpose,
-    flatten, fromPromise,
+    Try, TryAsync, Get, 
+    transpose, flatten, 
+    fromPromise,
 } from 'simply-result';
 ```
 
 ## Demo
 
 [See `./demo`](./demo/)
+
+## Type Docs
+
+### Result
+
+```ts
+type Result<V, E = Error> =
+  | Ok<V>
+  | Err<E>
+
+interface Ok<V> {
+  isOk: true
+  isErr: false
+  ok: V
+  match<T>(cases: {
+    Ok: (value: V) => T
+  }): T
+  map<T>(fn: (value: V) => T): Ok<T>
+  mapErr(fn: unknown): Ok<V>
+  toString(): string
+}
+
+interface Err<E> {
+  isOk: false
+  isErr: true
+  err: E
+  match<T>(cases: {
+    Err: (error: E) => T
+  }): T
+  map(fn: unknown): Err<E>
+  mapErr<F>(fn: (error: E) => F): Err<F>
+  toString(): string
+}
+
+function Ok<V>(value: V): Ok<V>
+
+function Err<E>(error: E): Err<E>
+```
+
+### Option
+
+```ts
+type Option<V> =
+  | Some<V>
+  | None
+
+interface Some<V> {
+  isSome: true
+  isNone: false
+  value: V
+  match<T>(cases: {
+    Some: (value: V) => T
+  }): T
+  map<T>(fn: (value: V) => T): Some<T>
+  toString(): string
+}
+
+interface None {
+  isSome: false
+  isNone: true
+  match<T>(cases: {
+    None: () => T
+  }): T
+  map(fn: unknown): None
+  toString(): string
+}
+
+function Some<V>(value: V): Some<V>
+const None: None
+```
+
+### Helpers
+
+```ts
+function Try<V, E = Error>(fn: () => V): Result<V, E>
+
+function TryAsync<V, E = Error>(fn: () => Promise<V>): Promise<Result<V, E>>
+
+function Get<V, K>(maplike: {
+  get(key: K): V
+  has(key: K): boolean
+}, key: K): Option<V>
+
+function transpose<V, E>(result: Result<Option<V>, E>): Option<Result<V, E>>
+
+function flatten<V>(outerOption: Option<Option<V>>): Option<V>
+function flatten<V, E>(outerResult: Result<Result<V, E>, E>): Result<V, E>
+
+function fromPromise<T, E = Error>(promiselike: PromiseLike<T>): Promise<Result<T, E>>
+```
