@@ -4,15 +4,15 @@ import { gzipSizeFromFileSync } from 'gzip-size';
 
 const intoHumanReadableSize = (sizeInBytes) => {
   if (sizeInBytes < 1000) {
-    return `${size}B`;
+    return `${size}b`;
   }
   const sizeInKilobytes = size / 1000;
   if (sizeInKilobytes < 1000) {
-    return `${sizeInKilobytes.toPrecision(3)}KB`
+    return `${sizeInKilobytes.toPrecision(3)}kb`
   }
   const sizeInMegabytes = sizeInKilobytes / 1000;
   if (sizeInMegabytes < 1000) {
-    return `${sizeInMegabytes.toPrecision(3)}MB`
+    return `${sizeInMegabytes.toPrecision(3)}mb`
   }
   throw new Error('Size too big');
 }
