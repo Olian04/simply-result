@@ -11,5 +11,7 @@ const str = doSomeWork()
   .map(it => it.toPrecision(3));
 
 if (str.isSome) {
-  console.log(str.value); // "0.333"
+  console.log(str.some); // "0.333"
 }
+console.log(String(str)); // "Some(0.333)"
+console.log(JSON.stringify({ str })); // { "str": "0.333" }

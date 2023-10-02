@@ -5,12 +5,13 @@ export type Option<V> =
 export interface Some<V> {
   isSome: true;
   isNone: false;
-  value: V;
+  some: V;
   match<T>(cases: {
-    Some: (value: V) => T,
+    Some: (some: V) => T,
   }): T;
-  map<T>(fn: (value: V) => T): Some<T>;
+  map<T>(fn: (some: V) => T): Some<T>;
   toString(): string;
+  toJSON(): unknown;
 }
 
 export interface None {
@@ -21,21 +22,23 @@ export interface None {
   }): T;
   map(fn: unknown): None;
   toString(): string;
+  toJSON(): unknown;
 }
 
 export const Some = <V>(value: V): Some<V> => ({
+  get some() {
+    return value;
+  },
   get isSome() {
     return true as const;
   },
   get isNone() {
     return false as const;
   },
-  get value() {
-    return value;
-  },
   match: cases => cases.Some(value),
   map: fn => Some(fn(value)),
   toString: () => `Some(${value})`,
+  toJSON: () => value,
 });
 
 export const None: None = {
@@ -48,4 +51,5 @@ export const None: None = {
   match: cases => cases.None(),
   map: () => None,
   toString: () => `None()`,
+  toJSON: () => undefined,
 };
