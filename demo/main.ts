@@ -13,5 +13,5 @@ const str = doSomeWork()
 if (str.isSome) {
   console.log(str.some); // "0.333"
 }
-console.log(String(str)); // "Some(0.333)"
-console.log(JSON.stringify({ str })); // { "str": "0.333" }
+console.log(String(str));
+console.log(JSON.stringify(str));

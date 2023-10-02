@@ -11,7 +11,6 @@ export interface Some<V> {
   }): T;
   map<T>(fn: (some: V) => T): Some<T>;
   toString(): string;
-  toJSON(): unknown;
 }
 
 export interface None {
@@ -22,7 +21,6 @@ export interface None {
   }): T;
   map(fn: unknown): None;
   toString(): string;
-  toJSON(): unknown;
 }
 
 export const Some = <V>(value: V): Some<V> => ({
@@ -38,7 +36,6 @@ export const Some = <V>(value: V): Some<V> => ({
   match: cases => cases.Some(value),
   map: fn => Some(fn(value)),
   toString: () => `Some(${value})`,
-  toJSON: () => value,
 });
 
 export const None: None = {
@@ -51,5 +48,4 @@ export const None: None = {
   match: cases => cases.None(),
   map: () => None,
   toString: () => `None()`,
-  toJSON: () => undefined,
 };

@@ -12,7 +12,6 @@ export interface Ok<V> {
   map<T>(fn: (ok: V) => T): Ok<T>;
   mapErr(fn: unknown): Ok<V>;
   toString(): string;
-  toJSON(): unknown;
 }
 
 export interface Err<E> {
@@ -25,7 +24,6 @@ export interface Err<E> {
   map(fn: unknown): Err<E>;
   mapErr<F>(fn: (err: E) => F): Err<F>;
   toString(): string;
-  toJSON(): unknown;
 }
 
 export const Ok = <V>(value: V): Ok<V> => ({
@@ -42,7 +40,6 @@ export const Ok = <V>(value: V): Ok<V> => ({
   map: fn => Ok(fn(value)),
   mapErr: () => Ok(value),
   toString: () => `Ok(${value})`,
-  toJSON: () => value,
 });
 
 export const Err = <E>(error: E): Err<E> => ({
@@ -59,5 +56,4 @@ export const Err = <E>(error: E): Err<E> => ({
   map: () => Err(error),
   mapErr: fn => Err(fn(error)),
   toString: () => `Err(${error})`,
-  toJSON: () => error,
 });
