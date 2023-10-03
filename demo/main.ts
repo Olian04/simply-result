@@ -3,7 +3,9 @@ import { Result, Ok, Some, None } from '..';
 const doSomeWork = (): Result<number, Error> => Ok(3);
 
 const str = doSomeWork()
-  .mapErr(console.error)
+  .mapErr(err => {
+    console.error(err);
+  })
   .intoOption()
   .andThen(v => v === 0 ? None : Some(v))
   .map(it => 1 / it)

@@ -12,6 +12,7 @@ export interface Ok<V> {
     Ok: (ok: V) => T,
   }): T;
   intoOption(): Some<V>;
+  intoErrOption(): None;
   andThen<T>(fn: (ok: V) => T): T;
   elseThen(fn: unknown): Ok<V>;
   map<T>(fn: (ok: V) => T): Ok<T>;
@@ -27,6 +28,7 @@ export interface Err<E> {
     Err: (err: E) => T,
   }): T;
   intoOption(): None;
+  intoErrOption(): Some<E>;
   andThen(fn: unknown): Err<E>;
   elseThen<T>(fn: (err: E) => T): T;
   map(fn: unknown): Err<E>;
@@ -46,6 +48,7 @@ export const Ok = <V>(value: V): Ok<V> => ({
   },
   match: cases => cases.Ok(value),
   intoOption: () => Some(value),
+  intoErrOption: () => None,
   andThen: fn => fn(value),
   elseThen: () => Ok(value),
   map: fn => Ok(fn(value)),
@@ -65,6 +68,7 @@ export const Err = <E>(error: E): Err<E> => ({
   },
   match: cases => cases.Err(error),
   intoOption: () => None,
+  intoErrOption: () => Some(error),
   andThen: () => Err(error),
   elseThen: fn => fn(error),
   map: () => Err(error),
