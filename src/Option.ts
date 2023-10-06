@@ -14,7 +14,6 @@ export interface Some<V> {
   intoResult(error: unknown): Ok<V>;
   andThen<T>(fn: (some: V) => T): T;
   elseThen(fn: unknown): Some<V>;
-  map<T>(fn: (some: V) => T): Some<T>;
   toString(): string;
 }
 
@@ -27,7 +26,6 @@ export interface None {
   intoResult<E>(error: E): Err<E>;
   andThen(fn: unknown): None;
   elseThen<T>(fn: () => T): T;
-  map(fn: unknown): None;
   toString(): string;
 }
 
@@ -45,7 +43,6 @@ export const Some = <V>(value: V): Some<V> => ({
   intoResult: () => Ok(value),
   andThen: fn => fn(value),
   elseThen: () => Some(value),
-  map: fn => Some(fn(value)),
   toString: () => `Some(${value})`,
 });
 
@@ -60,6 +57,5 @@ export const None: None = {
   intoResult: error => Err(error),
   andThen: () => None,
   elseThen: fn => fn(),
-  map: () => None,
   toString: () => `None()`,
 };

@@ -13,17 +13,20 @@ import { Result, Ok, Some, None } from 'simply-result';
 
 const doSomeWork = (): Result<number, Error> => Ok(3);
 
-const str = doSomeWork()
-    .match({
-        Ok: v => v === 0 ? None : Some(v),
-        Err: () => None,
-    })
-    .map(it => 1 / it)
-    .map(it => it.toPrecision(3));
+const fraction = doSomeWork()
+  .elseThen(err => {
+    console.error(err);
+    return Err(err);
+  })
+  .intoOption()
+  .andThen(it => it === 0 ? None : Some(it))
+  .andThen(it => Some(1 / it))
+  .match({
+    Some: it => it.toPrecision(3),
+    None: () => '0'
+  });
 
-if (str.isSome) {
-    console.log(str.some); // "0.333"
-}
+console.log(fraction); // "0.333"
 ```
 
 ## Installation
@@ -68,8 +71,6 @@ interface Ok<V> {
   intoErrOption(): None
   andThen<T>(fn: (ok: V) => T): T
   elseThen(fn: unknown): Ok<V>
-  map<T>(fn: (ok: V) => T): Ok<T>
-  mapErr(fn: unknown): Ok<V>
   toString(): string
 }
 
@@ -84,8 +85,6 @@ interface Err<E> {
   intoErrOption(): Some<E>
   andThen(fn: unknown): Err<E>
   elseThen<T>(fn: (err: E) => T): T
-  map(fn: unknown): Err<E>
-  mapErr<F>(fn: (err: E) => F): Err<F>
   toString(): string
 }
 
@@ -111,7 +110,6 @@ interface Some<V> {
   intoResult(error: unknown): Ok<V>
   andThen<T>(fn: (some: V) => T): T
   elseThen(fn: unknown): Some<V>
-  map<T>(fn: (some: V) => T): Some<T>
   toString(): string
 }
 
@@ -124,7 +122,6 @@ interface None {
   intoResult<E>(error: E): Err<E>
   andThen(fn: unknown): None
   elseThen<T>(fn: () => T): T
-  map(fn: unknown): None
   toString(): string
 }
 
