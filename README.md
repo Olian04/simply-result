@@ -62,9 +62,13 @@ interface Ok<V> {
   isErr: false
   ok: V
   match<T>(cases: {
-    Ok: (value: V) => T
+    Ok: (ok: V) => T,
   }): T
-  map<T>(fn: (value: V) => T): Ok<T>
+  intoOption(): Some<V>
+  intoErrOption(): None
+  andThen<T>(fn: (ok: V) => T): T
+  elseThen(fn: unknown): Ok<V>
+  map<T>(fn: (ok: V) => T): Ok<T>
   mapErr(fn: unknown): Ok<V>
   toString(): string
 }
@@ -74,10 +78,14 @@ interface Err<E> {
   isErr: true
   err: E
   match<T>(cases: {
-    Err: (error: E) => T
+    Err: (err: E) => T,
   }): T
+  intoOption(): None
+  intoErrOption(): Some<E>
+  andThen(fn: unknown): Err<E>
+  elseThen<T>(fn: (err: E) => T): T
   map(fn: unknown): Err<E>
-  mapErr<F>(fn: (error: E) => F): Err<F>
+  mapErr<F>(fn: (err: E) => F): Err<F>
   toString(): string
 }
 
@@ -96,11 +104,14 @@ type Option<V> =
 interface Some<V> {
   isSome: true
   isNone: false
-  value: V
+  some: V
   match<T>(cases: {
-    Some: (value: V) => T
+    Some: (some: V) => T,
   }): T
-  map<T>(fn: (value: V) => T): Some<T>
+  intoResult(error: unknown): Ok<V>
+  andThen<T>(fn: (some: V) => T): T
+  elseThen(fn: unknown): Some<V>
+  map<T>(fn: (some: V) => T): Some<T>
   toString(): string
 }
 
@@ -108,8 +119,11 @@ interface None {
   isSome: false
   isNone: true
   match<T>(cases: {
-    None: () => T
+    None: () => T,
   }): T
+  intoResult<E>(error: E): Err<E>
+  andThen(fn: unknown): None
+  elseThen<T>(fn: () => T): T
   map(fn: unknown): None
   toString(): string
 }
