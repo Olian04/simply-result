@@ -5,9 +5,9 @@ export type Option<V> =
   | None;
 
 export interface Some<V> {
-  isSome: true;
-  isNone: false;
-  some: V;
+  readonly isSome: true;
+  readonly isNone: false;
+  readonly some: V;
   match<T>(cases: {
     Some: (some: V) => T,
   }): T;
@@ -18,8 +18,8 @@ export interface Some<V> {
 }
 
 export interface None {
-  isSome: false;
-  isNone: true;
+  readonly isSome: false;
+  readonly isNone: true;
   match<T>(cases: {
     None: () => T,
   }): T;
@@ -29,16 +29,10 @@ export interface None {
   toString(): string;
 }
 
-export const Some = <V>(value: V): Some<V> => ({
-  get some() {
-    return value;
-  },
-  get isSome() {
-    return true as const;
-  },
-  get isNone() {
-    return false as const;
-  },
+export const Some = <V>(value: V): Some<V> => Object.freeze<Some<V>>({
+  some: value,
+  isSome: true as const,
+  isNone: false as const,
   match: cases => cases.Some(value),
   intoResult: () => Ok(value),
   andThen: fn => fn(value),
@@ -46,16 +40,12 @@ export const Some = <V>(value: V): Some<V> => ({
   toString: () => `Some(${value})`,
 });
 
-export const None: None = {
-  get isSome() {
-    return false as const;
-  },
-  get isNone() {
-    return true as const;
-  },
+export const None: None = Object.freeze<None>({
+  isSome: false as const,
+  isNone: true as const,
   match: cases => cases.None(),
   intoResult: error => Err(error),
   andThen: () => None,
   elseThen: fn => fn(),
   toString: () => `None()`,
-};
+});

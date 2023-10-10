@@ -5,9 +5,9 @@ export type Result<V, E = Error> =
   | Err<E>;
 
 export interface Ok<V> {
-  isOk: true;
-  isErr: false;
-  ok: V;
+  readonly isOk: true;
+  readonly isErr: false;
+  readonly ok: V;
   match<T>(cases: {
     Ok: (ok: V) => T,
   }): T;
@@ -19,9 +19,9 @@ export interface Ok<V> {
 }
 
 export interface Err<E> {
-  isOk: false;
-  isErr: true;
-  err: E;
+  readonly isOk: false;
+  readonly isErr: true;
+  readonly err: E;
   match<T>(cases: {
     Err: (err: E) => T,
   }): T;
@@ -32,16 +32,10 @@ export interface Err<E> {
   toString(): string;
 }
 
-export const Ok = <V>(value: V): Ok<V> => ({
-  get ok() {
-    return value;
-  },
-  get isOk() {
-    return true as const;
-  },
-  get isErr() {
-    return false as const;
-  },
+export const Ok = <V>(value: V): Ok<V> => Object.freeze<Ok<V>>({
+  ok: value,
+  isOk: true as const,
+  isErr: false as const,
   match: cases => cases.Ok(value),
   intoOption: () => Some(value),
   intoErrOption: () => None,
@@ -50,16 +44,10 @@ export const Ok = <V>(value: V): Ok<V> => ({
   toString: () => `Ok(${value})`,
 });
 
-export const Err = <E>(error: E): Err<E> => ({
-  get err() {
-    return error;
-  },
-  get isOk() {
-    return false as const;
-  },
-  get isErr() {
-    return true as const;
-  },
+export const Err = <E>(error: E): Err<E> => Object.freeze<Err<E>>({
+  err: error,
+  isOk: false as const,
+  isErr: true as const,
   match: cases => cases.Err(error),
   intoOption: () => None,
   intoErrOption: () => Some(error),

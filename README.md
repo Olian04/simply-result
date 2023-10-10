@@ -6,7 +6,7 @@
 
 # simply-result
 
-Simply typesafe Result and Option monads in typescript and javascript. 1kb minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations.
+Simply typesafe Result and Option monads in typescript and javascript. Only 1kb minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. On average [15% faster than try-catch](#performance).
 
 ```ts
 import { Result, Ok, Err, Some, None } from 'simply-result';
@@ -149,3 +149,15 @@ function flatten<V, E>(outerResult: Result<Result<V, E>, E>): Result<V, E>
 
 function fromPromise<T, E = Error>(promiselike: PromiseLike<T>): Promise<Result<T, E>>
 ```
+
+
+## Performance
+
+|           | Code                                                    | Result                                     |
+|:---------:|:-------------------------------------------------------:|:------------------------------------------:|
+| Result    | `Err(new Error()).elseThen(err => { String(err) })`     | `221,294 ops/sec ±1.54% (95 runs sampled)` |
+| Try Catch | `try { throw new Error() } catch (err) { String(err) }` | `192,479 ops/sec ±1.52% (93 runs sampled)` |
+| Baseline  | `String(new Error())`                                   | `294,006 ops/sec ±7.86% (50 runs sampled)` |
+
+Tests were ran on a `32gb MacBook M1 Pro` running `macOS 14.0`. The test code can be found [here](./demo/perf.ts).
+
