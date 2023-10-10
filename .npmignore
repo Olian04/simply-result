@@ -6,3 +6,4 @@ tmp
 .editorconfig
 tsconfig.json
 rollup.config.mjs
+tests
