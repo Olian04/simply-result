@@ -1,6 +1,6 @@
 {
   "name": "simply-result",
-  "version": "8.1.1",
+  "version": "8.1.2",
   "description": "Simply typesafe Result and Option monads in typescript and javascript.",
   "main": "dist/main.js",
   "sideEffects": false,
@@ -10,7 +10,7 @@
     "gen:size_badge": "rm -rf ./tmp && mkdir -p ./assets && rollup --config && node ./scripts/gen_size_badge_url.mjs |  xargs curl -o ./assets/size.badge.svg",
     "demo": "npx ts-node ./demo/main.ts",
     "perf": "npx ts-node ./demo/perf.ts",
-    "prepublishOnly": "npm run build && gen:size_badge"
+    "prepublishOnly": "npm run build && npm run gen:size_badge"
   },
   "repository": {
     "type": "git",
