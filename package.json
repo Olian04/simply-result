@@ -5,9 +5,9 @@
   "main": "dist/main.js",
   "sideEffects": false,
   "scripts": {
-    "build": "rimraf ./dist && tsc",
+    "build": "rm -rf ./dist && tsc",
     "test": "npm run build && vitest run ./tests/",
-    "gen:size_badge": "rimraf ./tmp && mkdir -p ./assets && rollup --config && node ./scripts/gen_size_badge_url.mjs |  xargs curl -o ./assets/size.badge.svg",
+    "gen:size_badge": "rm -rf ./tmp && mkdir -p ./assets && rollup --config && node ./scripts/gen_size_badge_url.mjs |  xargs curl -o ./assets/size.badge.svg",
     "demo": "npx ts-node ./demo/main.ts",
     "perf": "npx ts-node ./demo/perf.ts",
     "prepublishOnly": "npm run build && gen:size_badge"
@@ -37,7 +37,6 @@
     "benchmark": "^2.1.4",
     "gzip-size": "^7.0.0",
     "microtime": "^3.1.1",
-    "rimraf": "^5.0.4",
     "rollup": "^3.29.3",
     "vitest": "^0.34.6",
     "typescript": "^5.2.2"
