@@ -17,6 +17,39 @@ describe('Result', it => {
         res.err
       ).to.equal(undefined);
     });
+
+    it('.andThen should replace Ok', ({ expect }) => {
+      const before = Ok(Expected) as Result<string, string>;
+      const after = before.andThen(() => Ok(Wrong));
+      expect(after.isOk ? after.ok : expect.fail()).to.equal(Wrong);
+    });
+
+    it('.elseThen should preserve Ok', ({ expect }) => {
+      const before = Ok(Expected) as Result<string, string>;
+      const after = before.elseThen(() => Ok(Wrong));
+      expect(after.isOk ? after.ok : expect.fail()).to.equal(Expected);
+    });
+
+    it('.match should extract inner value of Ok', ({ expect }) => {
+      const before = Ok(Expected) as Result<string, string>;
+      const after = before.match({
+        Ok: it => it,
+        Err: () => Wrong,
+      });
+      expect(after).to.equal(Expected);
+    });
+
+    it('.intoOption should be Some', ({ expect }) => {
+      const before = Ok(Expected) as Result<string, string>;
+      const after = before.intoOption();
+      expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
+    });
+
+    it('.intoErrOption should be None', ({ expect }) => {
+      const before = Ok(Expected) as Result<string, string>;
+      const after = before.intoErrOption();
+      expect(after).to.equal(None);
+    });
   });
 
   describe('Err', it => {
@@ -30,71 +63,40 @@ describe('Result', it => {
         res.ok
       ).to.equal(undefined);
     });
-  });
 
-  it('andThen to replace Ok', ({ expect }) => {
-    const before = Ok(Expected) as Result<string, string>;
-    const after = before.andThen(() => Ok(Wrong));
-    expect(after.isOk ? after.ok : expect.fail()).to.equal(Wrong);
-  });
-
-  it('andThen to preserve Err', ({ expect }) => {
-    const before = Err(Expected) as Result<string, string>;
-    const after = before.andThen(() => Err(Wrong));
-    expect(after.isErr ? after.err : expect.fail()).to.equal(Expected);
-  });
-
-  it('elseThen to preserve Ok', ({ expect }) => {
-    const before = Ok(Expected) as Result<string, string>;
-    const after = before.elseThen(() => Ok(Wrong));
-    expect(after.isOk ? after.ok : expect.fail()).to.equal(Expected);
-  });
-
-  it('elseThen to replace Err', ({ expect }) => {
-    const before = Err(Expected) as Result<string, string>;
-    const after = before.elseThen(() => Err(Wrong));
-    expect(after.isErr ? after.err : expect.fail()).to.equal(Wrong);
-  });
-
-  it('match to extract inner value of Ok', ({ expect }) => {
-    const before = Ok(Expected) as Result<string, string>;
-    const after = before.match({
-      Ok: it => it,
-      Err: () => Wrong,
+    it('.andThen should preserve Err', ({ expect }) => {
+      const before = Err(Expected) as Result<string, string>;
+      const after = before.andThen(() => Err(Wrong));
+      expect(after.isErr ? after.err : expect.fail()).to.equal(Expected);
     });
-    expect(after).to.equal(Expected);
-  });
 
-  it('match to extract inner value of Err', ({ expect }) => {
-    const before = Err(Expected) as Result<string, string>;
-    const after = before.match({
-      Err: it => it,
-      Ok: () => Wrong,
+    it('.elseThen should replace Err', ({ expect }) => {
+      const before = Err(Expected) as Result<string, string>;
+      const after = before.elseThen(() => Err(Wrong));
+      expect(after.isErr ? after.err : expect.fail()).to.equal(Wrong);
     });
-    expect(after).to.equal(Expected);
-  });
 
-  it('intoOption of Ok to be Some', ({ expect }) => {
-    const before = Ok(Expected) as Result<string, string>;
-    const after = before.intoOption();
-    expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
-  });
+    it('.match should extract inner value of Err', ({ expect }) => {
+      const before = Err(Expected) as Result<string, string>;
+      const after = before.match({
+        Err: it => it,
+        Ok: () => Wrong,
+      });
+      expect(after).to.equal(Expected);
+    });
 
-  it('intoOption of Err to be None', ({ expect }) => {
-    const before = Err(Expected) as Result<string, string>;
-    const after = before.intoOption();
-    expect(after).to.equal(None);
-  });
+    it('.intoOption should be None', ({ expect }) => {
+      const before = Err(Expected) as Result<string, string>;
+      const after = before.intoOption();
+      expect(after).to.equal(None);
+    });
 
-  it('intoErrOption of Ok to be None', ({ expect }) => {
-    const before = Ok(Expected) as Result<string, string>;
-    const after = before.intoErrOption();
-    expect(after).to.equal(None);
-  });
 
-  it('intoErrOption of Err to be Some', ({ expect }) => {
-    const before = Err(Expected) as Result<string, string>;
-    const after = before.intoErrOption();
-    expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
+
+    it('.intoErrOption should be Some', ({ expect }) => {
+      const before = Err(Expected) as Result<string, string>;
+      const after = before.intoErrOption();
+      expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
+    });
   });
 });
