@@ -1,6 +1,6 @@
 import { describe } from 'vitest';
 
-import { Err, None, Ok, Result } from '../dist/main';
+import { Err, None, Ok, Result } from '../src/main';
 
 const Expected = 'Expected';
 const Wrong = 'Wrong';
@@ -50,6 +50,10 @@ describe('Result', () => {
       const after = before.intoErrOption();
       expect(after).to.equal(None);
     });
+
+    it('.toString should return a string', ({ expect }) => {
+      expect(Ok(Expected).toString()).toBeTypeOf('string');
+    });
   });
 
   describe('Err', it => {
@@ -97,6 +101,10 @@ describe('Result', () => {
       const before = Err(Expected) as Result<string, string>;
       const after = before.intoErrOption();
       expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
+    });
+
+    it('.toString should return a string', ({ expect }) => {
+      expect(Err(Expected).toString()).toBeTypeOf('string');
     });
   });
 });
