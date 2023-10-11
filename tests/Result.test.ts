@@ -5,7 +5,7 @@ import { Err, None, Ok, Result } from '../dist/main';
 const Expected = 'Expected';
 const Wrong = 'Wrong';
 
-describe('Result', it => {
+describe('Result', () => {
   describe('Ok', it => {
     it('should expose correct property values', ({ expect }) => {
       const res = Ok(Expected);
