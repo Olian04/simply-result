@@ -1,6 +1,7 @@
 [![Latest released version](https://img.shields.io/npm/v/simply-result)](https://www.npmjs.com/package/simply-result)
 ![Minified and gzipped bundle size](./assets/size.badge.svg)
 ![Type support](https://img.shields.io/npm/types/simply-result)
+[![CI status](https://img.shields.io/github/actions/workflow/status/olian04/simply-result/ci.yml?event=push&label=tests)](https://github.com/Olian04/simply-result/actions/workflows/ci.yml)
 [![Downloads from NPM](https://img.shields.io/npm/dm/simply-result?label=downloads%20npm)](https://www.npmjs.com/package/simply-result)
 [![MIT licensed](https://img.shields.io/npm/l/simply-result)](./LICENSE)
 
