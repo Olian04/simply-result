@@ -95,8 +95,6 @@ describe('Result', () => {
       expect(after).to.equal(None);
     });
 
-
-
     it('.intoErrOption should be Some', ({ expect }) => {
       const before = Err(Expected) as Result<string, string>;
       const after = before.intoErrOption();
