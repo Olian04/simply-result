@@ -2,6 +2,7 @@
 ![Minified and gzipped bundle size](./assets/size.badge.svg)
 ![Type support](https://img.shields.io/npm/types/simply-result)
 [![CI status](https://img.shields.io/github/actions/workflow/status/olian04/simply-result/ci.yml?event=push&label=tests)](https://github.com/Olian04/simply-result/actions/workflows/ci.yml)
+[![Code coverage](https://img.shields.io/codecov/c/gh/olian04/simply-result?token=54HYINU8yj&label=test%20coverage)](https://codecov.io/gh/Olian04/simply-result)
 [![Downloads from NPM](https://img.shields.io/npm/dm/simply-result?label=downloads%20npm)](https://www.npmjs.com/package/simply-result)
 [![MIT licensed](https://img.shields.io/npm/l/simply-result)](./LICENSE)
 
@@ -151,7 +152,6 @@ function flatten<V, E>(outerResult: Result<Result<V, E>, E>): Result<V, E>
 function fromPromise<T, E = Error>(promiselike: PromiseLike<T>): Promise<Result<T, E>>
 ```
 
-
 ## Performance
 
 |           | Code                                                    | Result                                     |
@@ -161,4 +161,3 @@ function fromPromise<T, E = Error>(promiselike: PromiseLike<T>): Promise<Result<
 | Baseline  | `String(new Error())`                                   | `211,627 ops/sec ±0.39% (89 runs sampled)` |
 
 Tests were ran on a `32gb MacBook M1 Pro` running `macOS 14.0`. The test code can be found [here](./demo/perf.ts).
-
