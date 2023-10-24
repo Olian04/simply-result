@@ -8,7 +8,9 @@
 
 # simply-result
 
-Simply typesafe Result and Option monads in typescript and javascript. Only 1kb minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. On average [~15% faster than try-catch](#performance).
+Simply typesafe Result and Option monads in typescript and javascript. Only about 700b minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. On average [~15% faster than try-catch](#performance).
+
+See also the sister library [simply-result-util](https://github.com/Olian04/simply-result-util) for useful monadic helper functions such as `Try`, `transpose`, and `flatten`.
 
 ```ts
 import { Result, Ok, Err, Some, None } from 'simply-result';
@@ -41,15 +43,10 @@ console.log(fraction); // "0.333"
 import {
     Result, Ok, Err,
     Option, Some, None,
-    Try, TryAsync, Get, 
-    transpose, flatten, 
-    fromPromise,
 } from 'simply-result';
 ```
 
 ## Demo
-
-[TS Playground](https://www.typescriptlang.org/play?ts=5.2.2#code/JYWwDg9gTgLgBAbzgJQKYGcCuAbGAaOAeQGsCBlCEVAgOQgDtU4BfOAMykrgHJ1QxsATwC0UDDhjcA3AFgAUPIDGDdPAAmEClQDq0YnAC8cABQBKAFwpxuADz1MIAEaooBAKJROUAHyHfJYwBmU1kFOWV6VThVKEM4DS1UXShiM3k4DLgAOhAAQxhFAAtjBHTM8pJLADc-OBqDBrgABjgAfjg6RjhLROMq0zwy8oyPKEszWs7qIZZTGZzcsGNgeANfAEY4AHo4Fbm5coWlldqVrJgIAAUxRWA+BiDTEPl5YDYTGKy7xNNEGYj0BBsKgstgIABzYyfKq5bCYVAhbY7ABETSygQxyPkzCAA)
 
 [See `./demo`](./demo/)
 
@@ -130,26 +127,6 @@ interface None {
 function Some<V>(value: V): Some<V>
 
 const None: None
-```
-
-### Helpers
-
-```ts
-function Try<V, E = Error>(fn: () => V): Result<V, E>
-
-function TryAsync<V, E = Error>(fn: () => Promise<V>): Promise<Result<V, E>>
-
-function Get<V, K>(maplike: {
-  get(key: K): V
-  has(key: K): boolean
-}, key: K): Option<V>
-
-function transpose<V, E>(result: Result<Option<V>, E>): Option<Result<V, E>>
-
-function flatten<V>(outerOption: Option<Option<V>>): Option<V>
-function flatten<V, E>(outerResult: Result<Result<V, E>, E>): Result<V, E>
-
-function fromPromise<T, E = Error>(promiselike: PromiseLike<T>): Promise<Result<T, E>>
 ```
 
 ## Performance
