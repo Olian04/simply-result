@@ -18,16 +18,40 @@ describe('Result', () => {
       ).to.equal(undefined);
     });
 
-    it('.andThen should replace Ok', ({ expect }) => {
+    it('.map should replace inner value of Ok', ({ expect }) => {
+      const before = Ok(Wrong) as Result<string, string>;
+      const after = before.map(() => Expected);
+      expect(after.isOk ? after.ok : expect.fail()).to.equal(Expected);
+    });
+
+    it('.mapErr should preserve Ok', ({ expect }) => {
       const before = Ok(Expected) as Result<string, string>;
-      const after = before.andThen(() => Ok(Wrong));
-      expect(after.isOk ? after.ok : expect.fail()).to.equal(Wrong);
+      const after = before.mapErr(() => Wrong);
+      expect(after.isOk ? after.ok : expect.fail()).to.equal(Expected);
+    });
+
+    it('.andThen should replace Ok', ({ expect }) => {
+      const before = Ok(Wrong) as Result<string, string>;
+      const after = before.andThen(() => Ok(Expected));
+      expect(after.isOk ? after.ok : expect.fail()).to.equal(Expected);
     });
 
     it('.elseThen should preserve Ok', ({ expect }) => {
       const before = Ok(Expected) as Result<string, string>;
       const after = before.elseThen(() => Ok(Wrong));
       expect(after.isOk ? after.ok : expect.fail()).to.equal(Expected);
+    });
+
+    it('.unwrapOr should return inner value', ({ expect }) => {
+      const before = Ok(Expected) as Result<string, string>;
+      const after = before.unwrapOr(Wrong);
+      expect(after).to.equal(Expected);
+    });
+
+    it('.unwrapElse should return inner value', ({ expect }) => {
+      const before = Ok(Expected) as Result<string, string>;
+      const after = before.unwrapElse(() => Wrong);
+      expect(after).to.equal(Expected);
     });
 
     it('.match should extract inner value of Ok', ({ expect }) => {
@@ -68,6 +92,18 @@ describe('Result', () => {
       ).to.equal(undefined);
     });
 
+    it('.map should preserve Err', ({ expect }) => {
+      const before = Err(Expected) as Result<string, string>;
+      const after = before.map(() => Wrong);
+      expect(after.isErr ? after.err : expect.fail()).to.equal(Expected);
+    });
+
+    it('.mapErr should replace inner value of Err', ({ expect }) => {
+      const before = Err(Wrong) as Result<string, string>;
+      const after = before.mapErr(() => Expected);
+      expect(after.isErr ? after.err : expect.fail()).to.equal(Expected);
+    });
+
     it('.andThen should preserve Err', ({ expect }) => {
       const before = Err(Expected) as Result<string, string>;
       const after = before.andThen(() => Err(Wrong));
@@ -75,9 +111,21 @@ describe('Result', () => {
     });
 
     it('.elseThen should replace Err', ({ expect }) => {
+      const before = Err(Wrong) as Result<string, string>;
+      const after = before.elseThen(() => Err(Expected));
+      expect(after.isErr ? after.err : expect.fail()).to.equal(Expected);
+    });
+
+    it('.unwrapOr should return argument', ({ expect }) => {
       const before = Err(Expected) as Result<string, string>;
-      const after = before.elseThen(() => Err(Wrong));
-      expect(after.isErr ? after.err : expect.fail()).to.equal(Wrong);
+      const after = before.unwrapOr(Expected);
+      expect(after).to.equal(Expected);
+    });
+
+    it('.unwrapElse should return fn return value', ({ expect }) => {
+      const before = Err(Expected) as Result<string, string>;
+      const after = before.unwrapElse(() => Expected);
+      expect(after).to.equal(Expected);
     });
 
     it('.match should extract inner value of Err', ({ expect }) => {
