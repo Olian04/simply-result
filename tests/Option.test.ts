@@ -18,45 +18,21 @@ describe('Option', () => {
       ).to.equal(undefined);
     });
 
-    it('.map should replace inner value of Some', ({ expect }) => {
+    it('.and should replace Some', ({ expect }) => {
       const before = Some(Wrong) as Option<string>;
-      const after = before.map(() => Expected);
+      const after = before.and(() => Some(Expected));
       expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
     });
 
-    it('.filter should replace None when predicate is false', ({ expect }) => {
+    it('.else should preserve Some', ({ expect }) => {
       const before = Some(Expected) as Option<string>;
-      const after = before.filter(() => false);
-      expect(after).to.equal(None);
-    });
-
-    it('.filter should preserve Some when predicate is true', ({ expect }) => {
-      const before = Some(Expected) as Option<string>;
-      const after = before.filter(() => true);
+      const after = before.else(() => Some(Wrong));
       expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
     });
 
-    it('.andThen should replace Some', ({ expect }) => {
-      const before = Some(Wrong) as Option<string>;
-      const after = before.andThen(() => Some(Expected));
-      expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
-    });
-
-    it('.elseThen should preserve Some', ({ expect }) => {
+    it('.unwrap should return inner value', ({ expect }) => {
       const before = Some(Expected) as Option<string>;
-      const after = before.elseThen(() => Some(Wrong));
-      expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
-    });
-
-    it('.unwrapOr should return inner value', ({ expect }) => {
-      const before = Some(Expected) as Option<string>;
-      const after = before.unwrapOr(Wrong);
-      expect(after).to.equal(Expected);
-    });
-
-    it('.unwrapElse should return inner value', ({ expect }) => {
-      const before = Some(Expected) as Option<string>;
-      const after = before.unwrapElse(() => Wrong);
+      const after = before.unwrap(() => Wrong);
       expect(after).to.equal(Expected);
     });
 
@@ -69,14 +45,8 @@ describe('Option', () => {
       expect(after).to.equal(Expected);
     });
 
-    it('.intoResult should be Ok', ({ expect }) => {
-      const before = Some(Expected) as Option<string>;
-      const after = before.intoResult(Wrong);
-      expect(after.isOk ? after.ok : expect.fail()).to.equal(Expected);
-    });
-
-    it('.toString should return a string', ({ expect }) => {
-      expect(Some(Expected).toString()).toBeTypeOf('string');
+    it('.toString should return a string starting with Some', ({ expect }) => {
+      expect(Some(Expected).toString()).toMatch(/^Some/);
     });
   });
 
@@ -91,45 +61,21 @@ describe('Option', () => {
       ).to.equal(undefined);
     });
 
-    it('.map should preserve None', ({ expect }) => {
+    it('.and should preserve None', ({ expect }) => {
       const before = None as Option<string>;
-      const after = before.map(() => Wrong);
+      const after = before.and(() => Expected);
       expect(after).to.equal(None);
     });
 
-    it('.filter should preserve None when predicate is false', ({ expect }) => {
+    it('.else should replace None', ({ expect }) => {
       const before = None as Option<string>;
-      const after = before.filter(() => false);
-      expect(after).to.equal(None);
-    });
-
-    it('.filter should preserve None when predicate is true', ({ expect }) => {
-      const before = None as Option<string>;
-      const after = before.filter(() => true);
-      expect(after).to.equal(None);
-    });
-
-    it('.andThen should preserve None', ({ expect }) => {
-      const before = None as Option<string>;
-      const after = before.andThen(() => Expected);
-      expect(after).to.equal(None);
-    });
-
-    it('.elseThen should replace None', ({ expect }) => {
-      const before = None as Option<string>;
-      const after = before.elseThen(() => Expected);
+      const after = before.else(() => Expected);
       expect(after).to.equal(Expected);
     });
 
-    it('.unwrapOr should return argument', ({ expect }) => {
+    it('.unwrap should return fn return value', ({ expect }) => {
       const before = None as Option<string>;
-      const after = before.unwrapOr(Expected);
-      expect(after).to.equal(Expected);
-    });
-
-    it('.unwrapElse should return fn return value', ({ expect }) => {
-      const before = None as Option<string>;
-      const after = before.unwrapElse(() => Expected);
+      const after = before.unwrap(() => Expected);
       expect(after).to.equal(Expected);
     });
 
@@ -142,14 +88,8 @@ describe('Option', () => {
       expect(after).to.equal(Expected);
     });
 
-    it('.intoOption should be None', ({ expect }) => {
-      const before = None as Option<string>;
-      const after = before.intoResult(Expected);
-      expect(after.isErr ? after.err : expect.fail()).to.equal(Expected);
-    });
-
-    it('.toString should return a string', ({ expect }) => {
-      expect(None.toString()).toBeTypeOf('string');
+    it('.toString should return a string starting with None', ({ expect }) => {
+      expect(None.toString()).toMatch(/^None/);
     });
   });
 });

@@ -1,5 +1,3 @@
-import { Err, Ok } from "./Result";
-
 export type Option<V> =
   | Some<V>
   | None;
@@ -11,14 +9,9 @@ export interface Some<V> {
   match<T>(cases: {
     Some: (some: V) => T,
   }): T;
-  intoResult(error: unknown): Ok<V>;
-  map<T>(fn: (some: V) => T): Some<T>;
-  filter(fn: (some: V) => boolean): Option<V>;
-  andThen<T>(fn: (some: V) => T): T;
-  elseThen(fn: unknown): Some<V>;
-  unwrapOr(some: unknown): V;
-  unwrapElse(fn: unknown): V;
-  toString(): string;
+  and<T>(fn: (some: V) => T): T;
+  else(fn: unknown): Some<V>;
+  unwrap(fn: unknown): V;
 }
 
 export interface None {
@@ -27,14 +20,9 @@ export interface None {
   match<T>(cases: {
     None: () => T,
   }): T;
-  intoResult<E>(error: E): Err<E>;
-  map(fn: unknown): None;
-  filter(fn: unknown): None;
-  andThen(fn: unknown): None;
-  elseThen<T>(fn: () => T): T;
-  unwrapOr<V>(some: V): V;
-  unwrapElse<V>(fn: () => V): V;
-  toString(): string;
+  and(fn: unknown): None;
+  else<T>(fn: () => T): T;
+  unwrap<V>(fn: () => V): V;
 }
 
 export const Some = <V>(value: V): Some<V> => Object.freeze<Some<V>>({
@@ -42,13 +30,10 @@ export const Some = <V>(value: V): Some<V> => Object.freeze<Some<V>>({
   isSome: true as const,
   isNone: false as const,
   match: cases => cases.Some(value),
-  intoResult: () => Ok(value),
-  map: fn => Some(fn(value)),
-  filter: fn => fn(value) ?  Some(value) : None,
-  andThen: fn => fn(value),
-  elseThen: () => Some(value),
-  unwrapOr: () => value,
-  unwrapElse: () => value,
+  and: fn => fn(value),
+  else: () => Some(value),
+  unwrap: () => value,
+  //@ts-expect-error implemented for debug readability
   toString: () => `Some(${value})`,
 });
 
@@ -56,12 +41,9 @@ export const None: None = Object.freeze<None>({
   isSome: false as const,
   isNone: true as const,
   match: cases => cases.None(),
-  intoResult: error => Err(error),
-  map: () => None,
-  filter: () => None,
-  andThen: () => None,
-  elseThen: fn => fn(),
-  unwrapOr: some => some,
-  unwrapElse: fn => fn(),
+  and: () => None,
+  else: fn => fn(),
+  unwrap: fn => fn(),
+  //@ts-expect-error implemented for debug readability
   toString: () => `None()`,
 });

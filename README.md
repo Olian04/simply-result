@@ -8,7 +8,7 @@
 
 # simply-result
 
-Simply typesafe Result and Option monads in typescript and javascript. Only ~800b minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. On average [~15% faster than try-catch](#performance).
+Simply typesafe Result and Option monads in typescript and javascript. Opinionated, tiny, and branchless implementation. Less than 700b minified and gzipped. On average [~15% faster than try-catch](#performance).
 
 See also the sister library [simply-result-util](https://github.com/Olian04/simply-result-util) for useful monadic helper functions such as `Try`, `transpose`, and `flatten`.
 
@@ -18,11 +18,15 @@ import { Result, Ok } from 'simply-result';
 const doSomeWork = (): Result<number, Error> => Ok(3);
 
 const fraction = doSomeWork()
-  .mapErr(err => console.error(err))
-  .intoOption()
-  .filter(it => it !== 0)
-  .map(it => (1 / it).toPrecision(3))
-  .unwrapOr('0');
+  .else(err => {
+    console.error(err);
+    return Err(err);
+  })
+  .and(it => {
+    const strFrac = (1 / it).toPrecision(3);
+    return Ok(strFrac);
+  })
+  .unwrap(() => '0');
 
 console.log(fraction); // '0.333'
 ```
@@ -60,15 +64,9 @@ interface Ok<V> {
   match<T>(cases: {
     Ok: (ok: V) => T
   }): T
-  intoOption(): Some<V>
-  intoErrOption(): None
-  map<T>(fn: (ok: V) => T): Ok<T>
-  mapErr(fn: unknown): Ok<V>
-  andThen<T>(fn: (ok: V) => T): T
-  elseThen(fn: unknown): Ok<V>
-  unwrapOr(ok: unknown): V
-  unwrapElse(fn: unknown): V
-  toString(): string
+  and<T>(fn: (ok: V) => T): T
+  else(fn: unknown): Ok<V>
+  unwrap(fn: unknown): V
 }
 
 interface Err<E> {
@@ -78,15 +76,9 @@ interface Err<E> {
   match<T>(cases: {
     Err: (err: E) => T
   }): T
-  intoOption(): None
-  intoErrOption(): Some<E>
-  map(fn: unknown): Err<E>
-  mapErr<F>(fn: (err: E) => F): Err<F>
-  andThen(fn: unknown): Err<E>
-  elseThen<T>(fn: (err: E) => T): T
-  unwrapOr<T>(ok: T): T
-  unwrapElse<T>(fn: () => T): T
-  toString(): string
+  and(fn: unknown): Err<E>
+  else<T>(fn: (err: E) => T): T
+  unwrap<T>(fn: () => T): T
 }
 
 function Ok<V>(value: V): Ok<V>
@@ -108,14 +100,9 @@ interface Some<V> {
   match<T>(cases: {
     Some: (some: V) => T
   }): T
-  intoResult(error: unknown): Ok<V>
-  map<T>(fn: (some: V) => T): Some<T>
-  filter(fn: (some: V) => boolean): Option<V>
-  andThen<T>(fn: (some: V) => T): T
-  elseThen(fn: unknown): Some<V>
-  unwrapOr(some: unknown): V
-  unwrapElse(fn: unknown): V
-  toString(): string
+  and<T>(fn: (some: V) => T): T
+  else(fn: unknown): Some<V>
+  unwrap(fn: unknown): V
 }
 
 interface None {
@@ -124,14 +111,9 @@ interface None {
   match<T>(cases: {
     None: () => T
   }): T
-  intoResult<E>(error: E): Err<E>
-  map(fn: unknown): None
-  filter(fn: unknown): None
-  andThen(fn: unknown): None
-  elseThen<T>(fn: () => T): T
-  unwrapOr<T>(some: T): T
-  unwrapElse<T>(fn: () => T): T
-  toString(): string
+  and(fn: unknown): None
+  else<T>(fn: () => T): T
+  unwrap<T>(fn: () => T): T
 }
 
 function Some<V>(value: V): Some<V>
@@ -143,7 +125,7 @@ const None: None
 
 |           | Code                                                    | Result                                     |
 |:---------:|:-------------------------------------------------------:|:------------------------------------------:|
-| Result    | `Err(new Error()).elseThen(err => { String(err) })`     | `210,625 ops/sec ±0.26% (91 runs sampled)` |
+| Result    | `Err(new Error()).else(err => { String(err) })`     | `210,625 ops/sec ±0.26% (91 runs sampled)` |
 | Try Catch | `try { throw new Error() } catch (err) { String(err) }` | `183,401 ops/sec ±0.57% (89 runs sampled)` |
 | Baseline  | `String(new Error())`                                   | `211,627 ops/sec ±0.39% (89 runs sampled)` |
 

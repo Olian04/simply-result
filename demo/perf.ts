@@ -7,7 +7,7 @@ const cycles = 5;
 ([
   ['warmup runtime', 1, () => String(new Error())],
   ['baseline', cycles, () => String(new Error())],
-  ['Result', cycles, () => Err(new Error()).elseThen(err => String(err))],
+  ['Result', cycles, () => Err(new Error()).else(err => String(err))],
   ['try catch', cycles, () => { try { throw new Error() } catch (err) { String(err) } }],
 ] as [string, number, () => void][])
   .reduce((suite, [name, cyclesToRun, fn]) => {

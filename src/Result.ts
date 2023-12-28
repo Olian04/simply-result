@@ -1,5 +1,3 @@
-import { None, Some } from "./Option";
-
 export type Result<V, E = Error> =
   | Ok<V>
   | Err<E>;
@@ -11,15 +9,9 @@ export interface Ok<V> {
   match<T>(cases: {
     Ok: (ok: V) => T,
   }): T;
-  intoOption(): Some<V>;
-  intoErrOption(): None;
-  map<T>(fn: (ok: V) => T): Ok<T>;
-  mapErr(fn: unknown): Ok<V>;
-  andThen<T>(fn: (ok: V) => T): T;
-  elseThen(fn: unknown): Ok<V>;
-  unwrapOr(ok: unknown): V;
-  unwrapElse(fn: unknown): V;
-  toString(): string;
+  and<T>(fn: (ok: V) => T): T;
+  else(fn: unknown): Ok<V>;
+  unwrap(fn: unknown): V;
 }
 
 export interface Err<E> {
@@ -29,15 +21,9 @@ export interface Err<E> {
   match<T>(cases: {
     Err: (err: E) => T,
   }): T;
-  intoOption(): None;
-  intoErrOption(): Some<E>;
-  map(fn: unknown): Err<E>;
-  mapErr<F>(fn: (err: E) => F): Err<F>;
-  andThen(fn: unknown): Err<E>;
-  elseThen<T>(fn: (err: E) => T): T;
-  unwrapOr<V>(ok: V): V;
-  unwrapElse<V>(fn: (err: E) => V): V;
-  toString(): string;
+  and(fn: unknown): Err<E>;
+  else<T>(fn: (err: E) => T): T;
+  unwrap<V>(fn: (err: E) => V): V;
 }
 
 export const Ok = <V>(value: V): Ok<V> => Object.freeze<Ok<V>>({
@@ -45,14 +31,10 @@ export const Ok = <V>(value: V): Ok<V> => Object.freeze<Ok<V>>({
   isOk: true as const,
   isErr: false as const,
   match: cases => cases.Ok(value),
-  intoOption: () => Some(value),
-  intoErrOption: () => None,
-  map: fn => Ok(fn(value)),
-  mapErr: () => Ok(value),
-  andThen: fn => fn(value),
-  elseThen: () => Ok(value),
-  unwrapOr: () => value,
-  unwrapElse: () => value,
+  and: fn => fn(value),
+  else: () => Ok(value),
+  unwrap: () => value,
+  //@ts-expect-error implemented for debug readability
   toString: () => `Ok(${value})`,
 });
 
@@ -61,13 +43,9 @@ export const Err = <E>(error: E): Err<E> => Object.freeze<Err<E>>({
   isOk: false as const,
   isErr: true as const,
   match: cases => cases.Err(error),
-  intoOption: () => None,
-  intoErrOption: () => Some(error),
-  map: () => Err(error),
-  mapErr: fn => Err(fn(error)),
-  andThen: () => Err(error),
-  elseThen: fn => fn(error),
-  unwrapOr: ok => ok,
-  unwrapElse: fn => fn(error),
+  and: () => Err(error),
+  else: fn => fn(error),
+  unwrap: fn => fn(error),
+  //@ts-expect-error implemented for debug readability
   toString: () => `Err(${error})`,
 });
