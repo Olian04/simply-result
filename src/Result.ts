@@ -9,9 +9,12 @@ export interface Ok<V> {
   match<T>(cases: {
     Ok: (ok: V) => T,
   }): T;
-  and<T>(fn: (ok: V) => T): T;
-  else(fn: unknown): Ok<V>;
-  unwrap(fn: unknown): V;
+  map<T>(fn: (ok: V) => T): Ok<T>;
+  mapErr(fn: unknown): Ok<V>;
+  chain<T, E>(fn: (ok: V) => Result<T, E>): Result<T, E>;
+  chainErr(fn: undefined): Ok<V>;
+  unwrapOr(ok: unknown): V;
+  unwrapElse(fn: unknown): V;
 }
 
 export interface Err<E> {
@@ -21,9 +24,12 @@ export interface Err<E> {
   match<T>(cases: {
     Err: (err: E) => T,
   }): T;
-  and(fn: unknown): Err<E>;
-  else<T>(fn: (err: E) => T): T;
-  unwrap<V>(fn: (err: E) => V): V;
+  map(fn: unknown): Err<E>;
+  mapErr<T>(fn: (err: E) => T): Err<T>;
+  chain(fn: unknown): Err<E>;
+  chainErr<T, F>(fn: (err: E) => Result<T, F>): Result<T, F>;
+  unwrapOr<V>(ok: V): V;
+  unwrapElse<V>(fn: (err: E) => V): V;
 }
 
 export const Ok = <V>(value: V): Ok<V> => Object.freeze<Ok<V>>({
@@ -31,11 +37,12 @@ export const Ok = <V>(value: V): Ok<V> => Object.freeze<Ok<V>>({
   isOk: true as const,
   isErr: false as const,
   match: cases => cases.Ok(value),
-  and: fn => fn(value),
-  else: () => Ok(value),
-  unwrap: () => value,
-  //@ts-expect-error implemented for debug readability
-  toString: () => `Ok(${value})`,
+  map: fn => Ok(fn(value)),
+  mapErr: () => Ok(value),
+  chain: fn => fn(value),
+  chainErr: () => Ok(value),
+  unwrapOr: () => value,
+  unwrapElse: () => value,
 });
 
 export const Err = <E>(error: E): Err<E> => Object.freeze<Err<E>>({
@@ -43,9 +50,10 @@ export const Err = <E>(error: E): Err<E> => Object.freeze<Err<E>>({
   isOk: false as const,
   isErr: true as const,
   match: cases => cases.Err(error),
-  and: () => Err(error),
-  else: fn => fn(error),
-  unwrap: fn => fn(error),
-  //@ts-expect-error implemented for debug readability
-  toString: () => `Err(${error})`,
+  map: () => Err(error),
+  mapErr: fn => Err(fn(error)),
+  chain: () => Err(error),
+  chainErr: fn => fn(error),
+  unwrapOr: ok => ok,
+  unwrapElse: fn => fn(error),
 });

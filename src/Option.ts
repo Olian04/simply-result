@@ -9,9 +9,10 @@ export interface Some<V> {
   match<T>(cases: {
     Some: (some: V) => T,
   }): T;
-  and<T>(fn: (some: V) => T): T;
-  else(fn: unknown): Some<V>;
-  unwrap(fn: unknown): V;
+  map<T>(fn: (some: V) => T): Some<T>;
+  chain<T>(fn: (ok: V) => Option<T>): Option<T>;
+  unwrapOr(some: unknown): V;
+  unwrapElse(fn: unknown): V;
 }
 
 export interface None {
@@ -20,9 +21,10 @@ export interface None {
   match<T>(cases: {
     None: () => T,
   }): T;
-  and(fn: unknown): None;
-  else<T>(fn: () => T): T;
-  unwrap<V>(fn: () => V): V;
+  map(fn: unknown): None;
+  chain(fn: undefined): None;
+  unwrapOr<V>(some: V): V;
+  unwrapElse<V>(fn: () => V): V;
 }
 
 export const Some = <V>(value: V): Some<V> => Object.freeze<Some<V>>({
@@ -30,20 +32,18 @@ export const Some = <V>(value: V): Some<V> => Object.freeze<Some<V>>({
   isSome: true as const,
   isNone: false as const,
   match: cases => cases.Some(value),
-  and: fn => fn(value),
-  else: () => Some(value),
-  unwrap: () => value,
-  //@ts-expect-error implemented for debug readability
-  toString: () => `Some(${value})`,
+  map: fn => Some(fn(value)),
+  chain: fn => fn(value),
+  unwrapOr: () => value,
+  unwrapElse: () => value,
 });
 
 export const None: None = Object.freeze<None>({
   isSome: false as const,
   isNone: true as const,
   match: cases => cases.None(),
-  and: () => None,
-  else: fn => fn(),
-  unwrap: fn => fn(),
-  //@ts-expect-error implemented for debug readability
-  toString: () => `None()`,
+  map: () => None,
+  chain: () => None,
+  unwrapOr: some => some,
+  unwrapElse: fn => fn(),
 });

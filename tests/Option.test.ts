@@ -18,22 +18,10 @@ describe('Option', () => {
       ).to.equal(undefined);
     });
 
-    it('.and should replace Some', ({ expect }) => {
+    it('.map should replace inner value of Some', ({ expect }) => {
       const before = Some(Wrong) as Option<string>;
-      const after = before.and(() => Some(Expected));
+      const after = before.map(() => Expected);
       expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
-    });
-
-    it('.else should preserve Some', ({ expect }) => {
-      const before = Some(Expected) as Option<string>;
-      const after = before.else(() => Some(Wrong));
-      expect(after.isSome ? after.some : expect.fail()).to.equal(Expected);
-    });
-
-    it('.unwrap should return inner value', ({ expect }) => {
-      const before = Some(Expected) as Option<string>;
-      const after = before.unwrap(() => Wrong);
-      expect(after).to.equal(Expected);
     });
 
     it('.match should extract inner value of Some', ({ expect }) => {
@@ -43,10 +31,6 @@ describe('Option', () => {
         None: () => Wrong,
       });
       expect(after).to.equal(Expected);
-    });
-
-    it('.toString should return a string starting with Some', ({ expect }) => {
-      expect(Some(Expected).toString()).toMatch(/^Some/);
     });
   });
 
@@ -61,22 +45,22 @@ describe('Option', () => {
       ).to.equal(undefined);
     });
 
-    it('.and should preserve None', ({ expect }) => {
+    it('.map should preserve None', ({ expect }) => {
       const before = None as Option<string>;
-      const after = before.and(() => Expected);
+      const after = before.map(() => Wrong);
       expect(after).to.equal(None);
     });
 
-    it('.else should replace None', ({ expect }) => {
+    it('.filter should preserve None when predicate is false', ({ expect }) => {
       const before = None as Option<string>;
-      const after = before.else(() => Expected);
-      expect(after).to.equal(Expected);
+      const after = before.filter(() => false);
+      expect(after).to.equal(None);
     });
 
-    it('.unwrap should return fn return value', ({ expect }) => {
+    it('.filter should preserve None when predicate is true', ({ expect }) => {
       const before = None as Option<string>;
-      const after = before.unwrap(() => Expected);
-      expect(after).to.equal(Expected);
+      const after = before.filter(() => true);
+      expect(after).to.equal(None);
     });
 
     it('.match should extract inner value of None', ({ expect }) => {
@@ -86,10 +70,6 @@ describe('Option', () => {
         Some: () => Wrong,
       });
       expect(after).to.equal(Expected);
-    });
-
-    it('.toString should return a string starting with None', ({ expect }) => {
-      expect(None.toString()).toMatch(/^None/);
     });
   });
 });

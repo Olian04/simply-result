@@ -3,14 +3,14 @@ import { Result, Ok, Err } from '..';
 const doSomeWork = (): Result<number, Error> => Ok(3);
 
 const fraction = doSomeWork()
-  .else(err => {
-    console.error(err);
-    return Err(err);
+  .chain(it => {
+    if (it === 0) {
+      return Err(new Error('Unable to devide by zero'));
+    }
+    return Ok(it);
   })
-  .and(it => {
-    const strFrac = (1 / it).toPrecision(3);
-    return Ok(strFrac);
-  })
-  .unwrap(() => '0');
+  .mapErr(console.error)
+  .map(it => (1 / it).toPrecision(3))
+  .unwrapOr('0');
 
 console.log(fraction); // '0.333'
