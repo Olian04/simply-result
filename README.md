@@ -8,7 +8,7 @@
 
 # simply-result
 
-Simply typesafe Result and Option monads in typescript and javascript. Only ~800b minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. On average [~15% faster than try-catch](#performance).
+Simply typesafe Result and Option monads in typescript and javascript. Only ~800b minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. On average [~13% faster than try-catch](#performance).
 
 See also the sister library [simply-result-util](https://github.com/Olian04/simply-result-util) for useful monadic helper functions such as `Try`, `transpose`, and `flatten`.
 
@@ -143,8 +143,8 @@ const None: None
 
 |           | Code                                                    | Result                                     |
 |:---------:|:-------------------------------------------------------:|:------------------------------------------:|
-| Result    | `Err(new Error()).elseThen(err => { String(err) })`     | `210,625 ops/sec ±0.26% (91 runs sampled)` |
-| Try Catch | `try { throw new Error() } catch (err) { String(err) }` | `183,401 ops/sec ±0.57% (89 runs sampled)` |
-| Baseline  | `String(new Error())`                                   | `211,627 ops/sec ±0.39% (89 runs sampled)` |
+| Result    | `Err(new Error()).elseThen(err => { String(err) })`     | `212,515 ops/sec ±0.25% (91 runs sampled)` |
+| Try Catch | `try { throw new Error() } catch (err) { String(err) }` | `188,485 ops/sec ±0.44% (92 runs sampled)` |
+| Baseline  | `String(new Error())`                                   | `213,844 ops/sec ±0.39% (91 runs sampled)` |
 
 Tests were ran on a `32gb MacBook M1 Pro` running `macOS 14.0`. The test code can be found [here](./demo/perf.ts).

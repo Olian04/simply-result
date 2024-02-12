@@ -37,22 +37,25 @@ export interface None {
   toString(): string;
 }
 
-export const Some = <V>(value: V): Some<V> => Object.freeze<Some<V>>({
-  some: value,
-  isSome: true as const,
-  isNone: false as const,
-  match: cases => cases.Some(value),
-  intoResult: () => Ok(value),
-  map: fn => Some(fn(value)),
-  filter: fn => fn(value) ?  Some(value) : None,
-  andThen: fn => fn(value),
-  elseThen: () => Some(value),
-  unwrapOr: () => value,
-  unwrapElse: () => value,
-  toString: () => `Some(${value})`,
-});
+export const Some = <V>(value: V): Some<V> => {
+  const self = {
+    some: value,
+    isSome: true as const,
+    isNone: false as const,
+    match: cases => cases.Some(value),
+    intoResult: () => Ok(value),
+    map: fn => Some(fn(value)),
+    filter: fn => fn(value) ? self : None,
+    andThen: fn => fn(value),
+    elseThen: () => self,
+    unwrapOr: () => value,
+    unwrapElse: () => value,
+    toString: () => `Some(${value})`,
+  };
+  return self;
+};
 
-export const None: None = Object.freeze<None>({
+export const None: None = {
   isSome: false as const,
   isNone: true as const,
   match: cases => cases.None(),
@@ -64,4 +67,4 @@ export const None: None = Object.freeze<None>({
   unwrapOr: some => some,
   unwrapElse: fn => fn(),
   toString: () => `None()`,
-});
+};

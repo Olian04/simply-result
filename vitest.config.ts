@@ -4,6 +4,9 @@ export default defineConfig({
   test: {
     coverage: {
       enabled: true,
+      include: [
+        'src'
+      ],
     },
     sequence: {
       concurrent: true,

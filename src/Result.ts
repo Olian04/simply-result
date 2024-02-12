@@ -40,34 +40,40 @@ export interface Err<E> {
   toString(): string;
 }
 
-export const Ok = <V>(value: V): Ok<V> => Object.freeze<Ok<V>>({
-  ok: value,
-  isOk: true as const,
-  isErr: false as const,
-  match: cases => cases.Ok(value),
-  intoOption: () => Some(value),
-  intoErrOption: () => None,
-  map: fn => Ok(fn(value)),
-  mapErr: () => Ok(value),
-  andThen: fn => fn(value),
-  elseThen: () => Ok(value),
-  unwrapOr: () => value,
-  unwrapElse: () => value,
-  toString: () => `Ok(${value})`,
-});
+export const Ok = <V>(value: V): Ok<V> => {
+  const self = {
+    ok: value,
+    isOk: true as const,
+    isErr: false as const,
+    match: cases => cases.Ok(value),
+    intoOption: () => Some(value),
+    intoErrOption: () => None,
+    map: fn => Ok(fn(value)),
+    mapErr: () => self,
+    andThen: fn => fn(value),
+    elseThen: () => self,
+    unwrapOr: () => value,
+    unwrapElse: () => value,
+    toString: () => `Ok(${value})`,
+  };
+  return self;
+};
 
-export const Err = <E>(error: E): Err<E> => Object.freeze<Err<E>>({
-  err: error,
-  isOk: false as const,
-  isErr: true as const,
-  match: cases => cases.Err(error),
-  intoOption: () => None,
-  intoErrOption: () => Some(error),
-  map: () => Err(error),
-  mapErr: fn => Err(fn(error)),
-  andThen: () => Err(error),
-  elseThen: fn => fn(error),
-  unwrapOr: ok => ok,
-  unwrapElse: fn => fn(error),
-  toString: () => `Err(${error})`,
-});
+export const Err = <E>(error: E): Err<E> => {
+  const self = {
+    err: error,
+    isOk: false as const,
+    isErr: true as const,
+    match: cases => cases.Err(error),
+    intoOption: () => None,
+    intoErrOption: () => Some(error),
+    map: () => self,
+    mapErr: fn => Err(fn(error)),
+    andThen: () => self,
+    elseThen: fn => fn(error),
+    unwrapOr: ok => ok,
+    unwrapElse: fn => fn(error),
+    toString: () => `Err(${error})`,
+  };
+  return self;
+};
