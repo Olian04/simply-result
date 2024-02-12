@@ -1,4 +1,4 @@
-import { Err, Ok } from "./Result";
+import { Err, ErrImpl, Ok, OkImpl } from "./Result";
 
 export type Option<V> =
   | Some<V>
@@ -37,31 +37,53 @@ export interface None {
   toString(): string;
 }
 
-export const Some = <V>(value: V): Some<V> => {
-  const self = {
-    some: value,
-    isSome: true as const,
-    isNone: false as const,
-    match: cases => cases.Some(value),
-    intoResult: () => Ok(value),
-    map: fn => Some(fn(value)),
-    filter: fn => fn(value) ? self : None,
-    andThen: fn => fn(value),
-    elseThen: () => self,
-    unwrapOr: () => value,
-    unwrapElse: () => value,
-    toString: () => `Some(${value})`,
-  };
-  return self;
-};
+export class SomeImpl<V> implements Some<V> {
+  isSome = true as const;
+  isNone = false as const;
+  constructor(
+    public some: V,
+  ) {}
 
+  intoResult(error: unknown): Ok<V> {
+    return new OkImpl(this.some);
+  }
+  filter(fn: (some: V) => boolean): Option<V> {
+    if (fn(this.some)) {
+      return this;
+    }
+    return None;
+  }
+  match<T>(cases: { Some: (some: V) => T; }): T {
+    return cases.Some(this.some);
+  }
+  map<T>(fn: (some: V) => T): Some<T> {
+    return new SomeImpl(fn(this.some));
+  }
+  andThen<T>(fn: (some: V) => T): T {
+    return fn(this.some);
+  }
+  elseThen(fn: unknown): Some<V> {
+    return this;
+  }
+  unwrapOr(some: unknown): V {
+    return this.some;
+  }
+  unwrapElse(fn: unknown): V {
+    return this.some;
+  }
+  toString(): string {
+    return `Some(${this.some})`;
+  }
+}
+
+export const Some = <V>(value: V): Some<V> => new SomeImpl(value);
 export const None: None = {
   isSome: false as const,
   isNone: true as const,
   match: cases => cases.None(),
-  intoResult: error => Err(error),
-  map: () => None,
+  intoResult: err => new ErrImpl(err),
   filter: () => None,
+  map: () => None,
   andThen: () => None,
   elseThen: fn => fn(),
   unwrapOr: some => some,

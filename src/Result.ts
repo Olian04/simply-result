@@ -1,4 +1,4 @@
-import { None, Some } from "./Option";
+import { None, Some, SomeImpl } from "./Option";
 
 export type Result<V, E = Error> =
   | Ok<V>
@@ -40,40 +40,83 @@ export interface Err<E> {
   toString(): string;
 }
 
-export const Ok = <V>(value: V): Ok<V> => {
-  const self = {
-    ok: value,
-    isOk: true as const,
-    isErr: false as const,
-    match: cases => cases.Ok(value),
-    intoOption: () => Some(value),
-    intoErrOption: () => None,
-    map: fn => Ok(fn(value)),
-    mapErr: () => self,
-    andThen: fn => fn(value),
-    elseThen: () => self,
-    unwrapOr: () => value,
-    unwrapElse: () => value,
-    toString: () => `Ok(${value})`,
-  };
-  return self;
-};
+export class OkImpl<V> implements Ok<V> {
+  isOk = true as const;
+  isErr = false as const;
+  constructor(
+    public ok: V,
+  ) {}
 
-export const Err = <E>(error: E): Err<E> => {
-  const self = {
-    err: error,
-    isOk: false as const,
-    isErr: true as const,
-    match: cases => cases.Err(error),
-    intoOption: () => None,
-    intoErrOption: () => Some(error),
-    map: () => self,
-    mapErr: fn => Err(fn(error)),
-    andThen: () => self,
-    elseThen: fn => fn(error),
-    unwrapOr: ok => ok,
-    unwrapElse: fn => fn(error),
-    toString: () => `Err(${error})`,
-  };
-  return self;
-};
+  intoOption(): Some<V> {
+    return new SomeImpl(this.ok);
+  }
+  intoErrOption(): None {
+    return None;
+  }
+  match<T>(cases: { Ok: (ok: V) => T; }): T {
+    return cases.Ok(this.ok);
+  }
+  map<T>(fn: (ok: V) => T): Ok<T> {
+    return new OkImpl(fn(this.ok));
+  }
+  mapErr(fn: unknown): Ok<V> {
+    return this;
+  }
+  andThen<T>(fn: (ok: V) => T): T {
+    return fn(this.ok);
+  }
+  elseThen(fn: unknown): Ok<V> {
+    return this;
+  }
+  unwrapOr(ok: unknown): V {
+    return this.ok;
+  }
+  unwrapElse(fn: unknown): V {
+    return this.ok;
+  }
+  toString(): string {
+    return `Ok(${this.ok})`;
+  }
+}
+
+export class ErrImpl<E> implements Err<E> {
+  isOk = false as const;
+  isErr = true as const;
+  constructor(
+    public err: E,
+  ) {}
+
+  intoOption(): None {
+    return None;
+  }
+  intoErrOption(): Some<E> {
+    return new SomeImpl(this.err);
+  }
+  match<T>(cases: { Err: (err: E) => T; }): T {
+    return cases.Err(this.err);
+  }
+  map(fn: unknown): Err<E> {
+    return this;
+  }
+  mapErr<F>(fn: (err: E) => F): Err<F> {
+    return new ErrImpl(fn(this.err));
+  }
+  andThen(fn: unknown): Err<E> {
+    return this;
+  }
+  elseThen<T>(fn: (err: E) => T): T {
+    return fn(this.err);
+  }
+  unwrapOr<V>(ok: V): V {
+    return ok;
+  }
+  unwrapElse<V>(fn: (err: E) => V): V {
+    return fn(this.err);
+  }
+  toString(): string {
+    return `Err(${this.err})`;
+  }
+}
+
+export const Ok = <V>(value: V): Ok<V> => new OkImpl(value);
+export const Err = <E>(error: E): Err<E> => new ErrImpl(error);

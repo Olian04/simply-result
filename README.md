@@ -8,7 +8,7 @@
 
 # simply-result
 
-Simply typesafe Result and Option monads in typescript and javascript. Only ~800b minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. On average [~13% faster than try-catch](#performance).
+Simply typesafe Result and Option monads in typescript and javascript. Only ~700b minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. Low memory foot print and on average [~13% faster than try-catch](#performance).
 
 See also the sister library [simply-result-util](https://github.com/Olian04/simply-result-util) for useful monadic helper functions such as `Try`, `transpose`, and `flatten`.
 
