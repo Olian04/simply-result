@@ -4,11 +4,13 @@ import { Err } from '..';
 
 const cycles = 5;
 
+const err = new Error();
+
 ([
-  ['warmup runtime', 1, () => String(new Error())],
-  ['baseline', cycles, () => String(new Error())],
-  ['Result', cycles, () => Err(new Error()).elseThen(err => String(err))],
-  ['try catch', cycles, () => { try { throw new Error() } catch (err) { String(err) } }],
+  ['warmup runtime', 1, () => err.message],
+  ['baseline', cycles, () => err.message],
+  ['Result', cycles, () => Err(err).elseThen(err => err.message)],
+  ['try catch', cycles, () => { try { throw err } catch (err) { err.message } }],
 ] as [string, number, () => void][])
   .reduce((suite, [name, cyclesToRun, fn]) => {
     Array(cyclesToRun).fill(0)
