@@ -10,12 +10,10 @@
 
 Result and Option monads for typescript. Optimized for:
 
-* __Execution speed:__ [80x faster than try-catch].
+* __Safety:__
+* __Execution speed:__ More than [100 times faster than try-catch!](#performance).
 * __Memory usage:__
-* __Type safety:__
 * __Disk footprint:__ Entire library is ~700b minified and gzipped.
-
-Simply typesafe Result and Option monads in typescript and javascript. Only ~700b minified and gzipped. Branchless implementation, waisting no processing cycles on unnecessary operations. Low memory foot print and on average [~13% faster than try-catch](#performance).
 
 See also the sister library [simply-result-util](https://github.com/Olian04/simply-result-util) for useful monadic helper functions such as `Try`, `transpose`, and `flatten`.
 
@@ -148,28 +146,29 @@ const None: None
 
 ## Performance
 
-|           | Code                                                    | Result                                     |
-|:---------:|:-------------------------------------------------------:|:------------------------------------------:|
-| Result    | `Err(new Error()).elseThen(err => { String(err) })`     | `212,515 ops/sec ±0.25% (91 runs sampled)` |
-| Try Catch | `try { throw new Error() } catch (err) { String(err) }` | `188,485 ops/sec ±0.44% (92 runs sampled)` |
-| Baseline  | `String(new Error())`                                   | `213,844 ops/sec ±0.39% (91 runs sampled)` |
+|           | Code                                                    | Result                                            |
+|:---------:|:-------------------------------------------------------:|:-------------------------------------------------:|
+| Result    | `Err(new Error()).elseThen(err => { err.message })`     | `123,901,767 ops/sec ±0.15% (100 runs sampled)`   |
+| Try Catch | `try { throw new Error() } catch (err) { err.message }` | `1,125,735 ops/sec ±0.29% (67  runs sampled)`     |
+| Baseline  | `new Error().message`                                   | `1,027,606,577 ops/sec ±0.10% (101 runs sampled)` |
 
-Tests were ran on a `32gb MacBook M1 Pro` running `macOS 14.0`. The test code can be found [here](./demo/perf.ts).
+All performance tests use the same `Error` object which is created before testing as to minimize the impact of creating an error object on the measurements.
+Tests were ran on a `32gb MacBook M1 Pro` running `macOS 14.3`. The test code can be found [here](./demo/perf.ts).
 
-```
-(1/5) baseline x 1,016,410,915 ops/sec ±0.31% (97 runs sampled)
-(2/5) baseline x 1,018,794,747 ops/sec ±0.11% (97 runs sampled)
-(3/5) baseline x 1,018,375,173 ops/sec ±0.19% (100 runs sampled)
-(4/5) baseline x 1,017,797,993 ops/sec ±0.16% (98 runs sampled)
-(5/5) baseline x 1,019,196,091 ops/sec ±0.08% (95 runs sampled)
-(1/5) Result x 127,682,145 ops/sec ±0.25% (98 runs sampled)
-(2/5) Result x 86,331,024 ops/sec ±4.48% (68 runs sampled)
-(3/5) Result x 78,626,610 ops/sec ±1.73% (92 runs sampled)
-(4/5) Result x 78,381,785 ops/sec ±1.44% (88 runs sampled)
-(5/5) Result x 78,719,327 ops/sec ±1.53% (92 runs sampled)
-(1/5) try catch x 1,030,889 ops/sec ±0.20% (55 runs sampled)
-(2/5) try catch x 1,055,859 ops/sec ±0.49% (62 runs sampled)
-(3/5) try catch x 1,044,346 ops/sec ±0.26% (66 runs sampled)
-(4/5) try catch x 1,057,609 ops/sec ±0.44% (66 runs sampled)
-(5/5) try catch x 1,042,217 ops/sec ±0.46% (63 runs sampled)
+```log
+(1/5) baseline  x 1,026,512,662 ops/sec ±0.13% (102 runs sampled)
+(2/5) baseline  x 1,025,374,916 ops/sec ±0.46% (94  runs sampled)
+(3/5) baseline  x 1,027,606,577 ops/sec ±0.10% (101 runs sampled)
+(4/5) baseline  x 1,027,408,614 ops/sec ±0.11% (100 runs sampled)
+(5/5) baseline  x 1,027,220,720 ops/sec ±0.15% (101 runs sampled)
+(1/5) Result    x   123,762,745 ops/sec ±0.21% (101 runs sampled)
+(2/5) Result    x   123,725,903 ops/sec ±0.20% (100 runs sampled)
+(3/5) Result    x   123,690,424 ops/sec ±0.21% (99  runs sampled)
+(4/5) Result    x   123,901,767 ops/sec ±0.15% (100 runs sampled)
+(5/5) Result    x   123,781,206 ops/sec ±0.25% (100 runs sampled)
+(1/5) try catch x     1,108,408 ops/sec ±0.34% (59  runs sampled)
+(2/5) try catch x     1,122,301 ops/sec ±0.37% (66  runs sampled)
+(3/5) try catch x     1,124,218 ops/sec ±0.37% (67  runs sampled)
+(4/5) try catch x     1,125,735 ops/sec ±0.29% (67  runs sampled)
+(5/5) try catch x     1,116,800 ops/sec ±0.39% (67  runs sampled)
 ```
