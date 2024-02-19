@@ -8,12 +8,7 @@
 
 # simply-result
 
-Result and Option monads for typescript. Optimized for:
-
-* __Safety:__
-* __Execution speed:__ More than [100 times faster than try-catch!](#performance).
-* __Memory usage:__
-* __Disk footprint:__ Entire library is ~700b minified and gzipped.
+Simply result is a Result and Option monad library for typescript and javascript. Its more than [100 times faster than try-catch](#performance) with a total package size of ~700b minified and gzipped.
 
 See also the sister library [simply-result-util](https://github.com/Olian04/simply-result-util) for useful monadic helper functions such as `Try`, `transpose`, and `flatten`.
 
