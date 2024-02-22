@@ -8,6 +8,7 @@ export interface Ok<V> {
   readonly isOk: true;
   readonly isErr: false;
   readonly ok: V;
+  readonly err: never;
   match<T>(cases: {
     Ok: (ok: V) => T,
   }): T;
@@ -25,6 +26,7 @@ export interface Ok<V> {
 export interface Err<E> {
   readonly isOk: false;
   readonly isErr: true;
+  readonly ok: never;
   readonly err: E;
   match<T>(cases: {
     Err: (err: E) => T,
@@ -43,6 +45,7 @@ export interface Err<E> {
 export class OkImpl<V> implements Ok<V> {
   isOk = true as const;
   isErr = false as const;
+  err: never;
   constructor(
     public ok: V,
   ) {}
@@ -82,6 +85,7 @@ export class OkImpl<V> implements Ok<V> {
 export class ErrImpl<E> implements Err<E> {
   isOk = false as const;
   isErr = true as const;
+  ok: never;
   constructor(
     public err: E,
   ) {}

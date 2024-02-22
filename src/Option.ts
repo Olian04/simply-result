@@ -24,6 +24,7 @@ export interface Some<V> {
 export interface None {
   readonly isSome: false;
   readonly isNone: true;
+  readonly some: never;
   match<T>(cases: {
     None: () => T,
   }): T;
@@ -80,6 +81,7 @@ export const Some = <V>(value: V): Some<V> => new SomeImpl(value);
 export const None: None = {
   isSome: false as const,
   isNone: true as const,
+  some: undefined as never,
   match: cases => cases.None(),
   intoResult: err => new ErrImpl(err),
   filter: () => None,
