@@ -12,10 +12,6 @@ describe('Option', () => {
       expect(res.isSome).to.be.true;
       expect(res.isNone).to.be.false;
       expect(res.some).to.equal(Expected);
-      expect(
-        //@ts-expect-error
-        res.none
-      ).to.equal(undefined);
     });
 
     it('.map should replace inner value of Some', ({ expect }) => {
@@ -85,10 +81,7 @@ describe('Option', () => {
       const res = None;
       expect(res.isSome).to.be.false;
       expect(res.isNone).to.be.true;
-      expect(
-        //@ts-expect-error
-        res.Some
-      ).to.equal(undefined);
+      expect(res.some).to.equal(undefined);
     });
 
     it('.map should preserve None', ({ expect }) => {

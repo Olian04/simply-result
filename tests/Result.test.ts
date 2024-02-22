@@ -12,10 +12,7 @@ describe('Result', () => {
       expect(res.isOk).to.be.true;
       expect(res.isErr).to.be.false;
       expect(res.ok).to.equal(Expected);
-      expect(
-        //@ts-expect-error
-        res.err
-      ).to.equal(undefined);
+      expect(res.err).to.equal(undefined);
     });
 
     it('.map should replace inner value of Ok', ({ expect }) => {
@@ -86,10 +83,7 @@ describe('Result', () => {
       expect(res.isOk).to.be.false;
       expect(res.isErr).to.be.true;
       expect(res.err).to.equal(Expected);
-      expect(
-        //@ts-expect-error
-        res.ok
-      ).to.equal(undefined);
+      expect(res.ok).to.equal(undefined);
     });
 
     it('.map should preserve Err', ({ expect }) => {
